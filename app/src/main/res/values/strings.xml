@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">BloodBank</string>
+
+    <string name="response">Requests</string>
+    <string name="request">Responses</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="intro1title">Blood Bank</string>
+    <string name="intro1description">An easy way for blood donors to connect.</string>
+
+    <string name="intro2title">Find Blood Easily</string>
+    <string name="intro2description">Bloodbank helps you to share your contact number with donors ,should you accept their request.</string>
+
+    <string name="intro3title">Do your bit</string>
+    <string name="intro3description">Bloodbank does not share your personal details ,unless you want to share them.</string>
+
+    <string name="loginhint">Enter 10 digit number here</string>
+    <string name="otphint">Enter OTP here</string>
+    <string name="generate">Generate OTP</string>
+    <string name="next">Submit</string>
+    <string name="bloodgroup">Blood Group</string>
+    <string name="name">Name</string>
+    <string name="location">Location</string>
+
+    <string name="setlocation">Set Location</string>
+
+
+    <string name="bloodgroup_hint">C+</string>
+    <string name="name_hint">John Doe</string>
+    <string name="level_hint">21</string>
+    <string name="location_hint">Dharamshala,India</string>
+    <string name="address_hint">Dharamshala,India</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="notify_donors">Notify Donors</string>
+    <string name="title_activity_two_fragment">TwoFragment</string>
+
+    <string name="name_default">John Doe</string>
+    <string name="level_default">21</string>
+
+    <string name="response_empty">You do not have any responses.Tap FAB to start a new campaign</string>
+    <string name="request_empty">You do not have any requests.</string>
+    <string name="select_bloodtype">Select Blood Group</string>
+    <string name="level">Level</string>
+    <string name="donor_empty">No donors found.Try increasing the search radius.</string>
+    <string name="clear">Clear All</string>
+    <string name="search_donor">Search for Donors</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+    <string name="call_button_desc">Press to call</string>
+    <string name="new_campaight_button_desc">Start New Campaign</string>
+
+
+    <string name="unsuccessful">"Data Push Unsuccessful</string>
+    <string name="connection_check">Check your Internet Connection!</string>
+    <string name="contact_shared">Contact number shared!</string>
+    <string name="donor_request_sent">Donor Request Sent</string>
+    <string name="increase_radius"> No Donors Available,Try increasing search radius.</string>
+
+    <string-array name="blood_groups">
+        <item>A+</item>
+        <item>A-</item>
+        <item>B+</item>
+        <item>B-</item>
+        <item>O+</item>
+        <item>O-</item>
+        <item>AB+</item>
+        <item>AB-</item>
+    </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>
