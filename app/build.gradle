@@ -37,4 +37,7 @@ dependencies {
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+
+    //Tango library for Intro Screens
+    implementation 'agency.tango.android:material-intro-screen:0.0.5'
 }
