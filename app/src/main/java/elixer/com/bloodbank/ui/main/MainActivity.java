@@ -1,25 +1,36 @@
-package elixer.com.bloodbank;
+package elixer.com.bloodbank.ui.main;
 
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.firebase.ui.auth.AuthUI;
+
+import java.util.Arrays;
+import java.util.List;
+
+import elixer.com.bloodbank.BaseActivity;
+import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.ui.IntroActivity;
-import elixer.com.bloodbank.ui.requests.RequestsFragment;
 import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
+import elixer.com.bloodbank.ui.requests.RequestsFragment;
 import elixer.com.bloodbank.util.LocalProperties;
+
+import static elixer.com.bloodbank.util.Constants.RC_SIGN_IN;
 
 public class MainActivity extends BaseActivity {
 
@@ -33,11 +44,13 @@ public class MainActivity extends BaseActivity {
     private ViewPager mViewPager;
     private SharedPreferences mSharedPreference;
 
+    private MainViewModel mMainViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e(TAG, "onCreate: Created..." );
+        Log.e(TAG, "onCreate: Created...");
 
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
         //Check if App is run first Time
@@ -49,11 +62,13 @@ public class MainActivity extends BaseActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        subscribeObservers();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,16 +79,46 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+
+    }
+
+    private void subscribeObservers() {
+        mMainViewModel.getIsSignedIn().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean != null) {
+                    //Start Sign In with AuthUI
+                    if (!aBoolean) startSignIn();
+                }
+            }
+        });
+    }
+
+    private void startSignIn() {
+
+        // Choose authentication providers
+        //Only Phone number for now
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.PhoneBuilder().build());
+
+        // Create and launch sign-in intent
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                RC_SIGN_IN);
+
     }
 
     private void checkIfFirstTime() {
         LocalProperties localProperties = new LocalProperties(mSharedPreference);
-       if( localProperties.retrieveIfFirstTime()){
-           Log.e(TAG, "checkIfFirstTime: "+ localProperties.retrieveIfFirstTime() );
-           Intent intent = new Intent(this, IntroActivity.class);
-           startActivity(intent);
-           localProperties.storeIfFirstTime();
-       }
+        if (localProperties.retrieveIfFirstTime()) {
+            Log.e(TAG, "checkIfFirstTime: " + localProperties.retrieveIfFirstTime());
+            Intent intent = new Intent(this, IntroActivity.class);
+            startActivity(intent);
+            localProperties.storeIfFirstTime();
+        }
 
     }
 
@@ -96,9 +141,9 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void setupViewPager(ViewPager viewPager){
-        mSectionsPageAdapter.addFragment(new ResponsesFragment(),"Response");
-        mSectionsPageAdapter.addFragment(new RequestsFragment(),"Requests");
+    private void setupViewPager(ViewPager viewPager) {
+        mSectionsPageAdapter.addFragment(new ResponsesFragment(), "Response");
+        mSectionsPageAdapter.addFragment(new RequestsFragment(), "Requests");
         viewPager.setAdapter(mSectionsPageAdapter);
     }
 
