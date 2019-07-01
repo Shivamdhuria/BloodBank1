@@ -44,7 +44,7 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     //Tango library for Intro Screens
-    implementation 'agency.tango.android:material-intro-screen:0.0.5'
+    implementation 'io.github.dreierf:material-intro-screen:0.0.6'
 
     //Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:18.0.0'

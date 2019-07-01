@@ -1,26 +1,38 @@
 package elixer.com.bloodbank.ui;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
-
-import agency.tango.materialintroscreen.MaterialIntroActivity;
-import agency.tango.materialintroscreen.SlideFragmentBuilder;
 import elixer.com.bloodbank.R;
+import elixer.com.bloodbank.ui.main.MainActivity;
+import elixer.com.bloodbank.util.LocalProperties;
+import io.github.dreierf.materialintroscreen.MaterialIntroActivity;
+import io.github.dreierf.materialintroscreen.SlideFragmentBuilder;
 
 public class IntroActivity extends MaterialIntroActivity {
     private static final String TAG = "IntroActivity";
+    //Check if App is run first Time
+
+    private SharedPreferences mSharedPreference;
+    private LocalProperties localProperties;
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy:destroy " );
+        Log.e(TAG, "onDestroy:destroy ");
         super.onDestroy();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
+        localProperties = new LocalProperties(mSharedPreference);
+        checkIfFirstTime();
+
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorBackground)
                 .buttonsColor(R.color.colorAccent)
@@ -49,7 +61,20 @@ public class IntroActivity extends MaterialIntroActivity {
 
     @Override
     public void onFinish() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        localProperties.storeIfFirstTime();
         super.onFinish();
+
+    }
+
+    private void checkIfFirstTime() {
+        if (!localProperties.retrieveIfFirstTime()) {
+            Log.e(TAG, "checkIfFirstTime: " + localProperties.retrieveIfFirstTime());
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 }
