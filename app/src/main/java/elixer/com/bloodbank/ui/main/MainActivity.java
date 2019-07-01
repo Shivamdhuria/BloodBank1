@@ -86,6 +86,7 @@ public class MainActivity extends BaseActivity {
         mMainViewModel.getIsSignedIn().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
+                Log.e(TAG, "onChanged:...... "+ aBoolean.toString() );
                 if (aBoolean != null) {
                     //Start Sign In with AuthUI
                     if (!aBoolean) startSignIn();
@@ -134,7 +135,10 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sign_out) {
+//            AuthUI.getInstance().signOut(this);
+//            mMainViewModel.setIsSignIn();
+            mMainViewModel.setIsSignOut();
             return true;
         }
         return super.onOptionsItemSelected(item);

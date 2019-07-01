@@ -1,26 +1,32 @@
 package elixer.com.bloodbank.ui.main;
 
-import androidx.lifecycle.LiveData;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
 
-    private final LiveData<Boolean> isSignedIn;
+    private MutableLiveData<Boolean> isSignedIn;
+    private FirebaseAuth firebaseAuth;
+    private static final String TAG = "MainViewModel";
 
     public MainViewModel() {
-        this.isSignedIn = new LiveData<Boolean>() {
-            @Override
-            protected void onActive() {
-                super.onActive();
-                setValue(FirebaseAuth.getInstance().getCurrentUser() != null);
-            }
-        };
+        isSignedIn = new MutableLiveData<Boolean>();
+        isSignedIn.setValue(FirebaseAuth.getInstance().getCurrentUser() != null);
     }
 
     public LiveData<Boolean> getIsSignedIn() {
         return isSignedIn;
+    }
+
+    public void setIsSignOut() {
+
+        FirebaseAuth.getInstance().signOut();
+        isSignedIn.setValue(FirebaseAuth.getInstance().getCurrentUser() != null);
+
     }
 }
