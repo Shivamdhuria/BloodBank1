@@ -9,6 +9,7 @@ import android.util.Log;
 
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.ui.main.MainActivity;
+import elixer.com.bloodbank.ui.profile.BuildProfile;
 import elixer.com.bloodbank.util.LocalProperties;
 import io.github.dreierf.materialintroscreen.MaterialIntroActivity;
 import io.github.dreierf.materialintroscreen.SlideFragmentBuilder;
