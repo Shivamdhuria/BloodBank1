@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import elixer.com.bloodbank.BaseActivity;
+import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.ui.IntroActivity;
@@ -56,7 +57,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e(TAG, "onCreate: Created...");
+        Log.d(TAG, "onCreate: Created...");
+
 
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
         //Check if App is run first Time

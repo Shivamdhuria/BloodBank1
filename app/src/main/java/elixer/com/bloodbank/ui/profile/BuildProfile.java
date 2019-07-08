@@ -63,7 +63,7 @@ public class BuildProfile extends AppCompatActivity {
 //        Log.e(TAG, "onCreate:"+  BuildConfig.API_KEY );
 
         // Initialize Places.
-        Places.initialize(getApplicationContext(), BuildConfig.PLACES_API_KEY);
+        Places.initialize(getApplicationContext(), BuildConfig.PlacesApiKey);
 
 // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
