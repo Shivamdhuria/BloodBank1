@@ -53,8 +53,10 @@ public class BuildProfile extends AppCompatActivity {
         name = (EditText) findViewById(R.id.name);
         age = findViewById(R.id.editText_age);
         phoneNumber = findViewById(R.id.phone_edit);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        phoneNumber.setText(user.getPhoneNumber());
+
+
 
 
         fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
@@ -98,7 +100,7 @@ public class BuildProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: Remove all repository reference and use ViewModel
                 buildProfileRepository.AddProfileAndLocation(phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
-                        "shivam", city, 0, 23, latitude, longitude);
+                        age.getText().toString(), city, 0, 23, latitude, longitude);
             }
         });
 
