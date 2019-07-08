@@ -78,4 +78,5 @@
     <string name="sign_out">Sign Out</string>
     <string name="age">Age</string>
     <string name="submit">Submit</string>
+    <string name="requests_db">requests</string>
 </resources>

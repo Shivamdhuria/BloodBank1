@@ -3,8 +3,9 @@ package elixer.com.bloodbank.util;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 
-public class Resource<T> {
+public class Resource<T>   {
 
     @NonNull
     public final Status status;
