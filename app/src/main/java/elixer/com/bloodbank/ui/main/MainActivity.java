@@ -32,6 +32,7 @@ import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.ui.IntroActivity;
+import elixer.com.bloodbank.ui.campaign.NewCampaign;
 import elixer.com.bloodbank.ui.profile.BuildProfile;
 import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
 import elixer.com.bloodbank.ui.requests.RequestsFragment;
@@ -82,8 +83,9 @@ public class MainActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                startActivity(new Intent(view.getContext(), NewCampaign.class));
             }
         });
 

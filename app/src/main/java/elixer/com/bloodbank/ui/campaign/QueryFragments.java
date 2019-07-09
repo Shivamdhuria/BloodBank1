@@ -1,10 +1,14 @@
-package elixer.com.bloodbank.ui.profile;
+package elixer.com.bloodbank.ui.campaign;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -13,66 +17,46 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.repositories.BuildProfileRepository;
 
-public class BuildProfile extends AppCompatActivity {
+public class QueryFragments extends Fragment {
 
     private static List<String> BLOOD_GROUPS;
-
-    private Button submitButton;
-    private Toolbar toolbar;
-    int AUTOCOMPLETE_REQUEST_CODE = 1;
-
+    MaterialSpinner spinner;
     Double latitude, longitude;
     String city;
-    EditText name, age, phoneNumber;
-    // Set the fields to specify which types of place data to
-// return after the user has made a selection.
-    List<Place.Field> fields;
 
-    BuildProfileRepository buildProfileRepository;
-    MaterialSpinner spinner;
-    private static final String TAG = "BuildProfile";
+
+    private static final String TAG = "QueryFragments";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_build_profile);
-        submitButton = findViewById(R.id.btn_submit);
-        name = (EditText) findViewById(R.id.name);
-        age = findViewById(R.id.editText_age);
-        phoneNumber = findViewById(R.id.phone_edit);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        phoneNumber.setText(user.getPhoneNumber());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.query_fragment, container, false);
 
 
+    }
 
-
-        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-        buildProfileRepository = new BuildProfileRepository();
-        setUpSpinner();
-//        Log.e(TAG, "onCreate:"+  BuildConfig.API_KEY );
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpSpinner(view);
         // Initialize Places.
-        Places.initialize(getApplicationContext(), BuildConfig.PlacesApiKey);
+        Places.initialize(view.getContext(), BuildConfig.PlacesApiKey);
 
         // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
+        PlacesClient placesClient = Places.createClient(view.getContext());
 
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+                getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
@@ -86,7 +70,12 @@ public class BuildProfile extends AppCompatActivity {
                 city = place.getName();
                 latitude = (place.getLatLng().latitude);
                 longitude = (place.getLatLng().longitude);
+                //Launch search radius Fragment
+                launchSearchRadiusFragment();
+
             }
+
+
 
             @Override
             public void onError(Status status) {
@@ -94,25 +83,20 @@ public class BuildProfile extends AppCompatActivity {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+    }
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: Remove all repository reference and use ViewModel
-                buildProfileRepository.AddProfileAndLocation(phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
-                        age.getText().toString(), city, 0, 23, latitude, longitude);
-            }
-        });
+    private void launchSearchRadiusFragment() {
+        SearchRadiusFragment searchRadiusFragment = new SearchRadiusFragment();
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, searchRadiusFragment, "findThisFragment")
+                .addToBackStack(null)
+                .commit();
 
     }
 
-    private void writeToDatabase(String toString, String s, EditText name, String city, int i, EditText age, Double latitude, Double longitude) {
-        // buildProfileRepository.AddProfileAndLocation();
-    }
-
-    private void setUpSpinner() {
+    private void setUpSpinner(View view) {
         BLOOD_GROUPS = Arrays.asList(getResources().getStringArray(R.array.blood_groups));
-        spinner = (MaterialSpinner) findViewById(R.id.spinner);
+        spinner = (MaterialSpinner) view.findViewById(R.id.spinner);
         spinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +111,4 @@ public class BuildProfile extends AppCompatActivity {
             }
         });
     }
-
-
 }
