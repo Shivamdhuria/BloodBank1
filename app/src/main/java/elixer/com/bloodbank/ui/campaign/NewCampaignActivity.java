@@ -1,14 +1,14 @@
 package elixer.com.bloodbank.ui.campaign;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Bundle;
-
 import elixer.com.bloodbank.R;
 
-public class NewCampaign extends AppCompatActivity {
+public class NewCampaignActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,12 +19,12 @@ public class NewCampaign extends AppCompatActivity {
         Fragment newFragment = new QueryFragments();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
+    // Replace whatever is in the fragment_container view with this fragment,
+    // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
 
-// Commit the transaction
+    // Commit the transaction
         transaction.commit();
     }
 }

@@ -1,12 +1,17 @@
 package elixer.com.bloodbank.ui.campaign;
 
-import android.app.Application;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
+public class NewCampaignViewModel extends ViewModel {
 
-public class NewCampaignViewModel extends AndroidViewModel {
-    public NewCampaignViewModel(@NonNull Application application) {
-        super(application);
+    private final MutableLiveData message = new MutableLiveData();
+
+    public void setMessage(String msg) {
+        message.setValue(msg);
+    }
+
+    public MutableLiveData getMessage() {
+        return message;
     }
 }

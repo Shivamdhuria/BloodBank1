@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -51,8 +50,8 @@ public class QueryFragments extends Fragment {
         // Initialize Places.
         Places.initialize(view.getContext(), BuildConfig.PlacesApiKey);
 
-        // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(view.getContext());
+//        // Create a new Places client instance.
+//        PlacesClient placesClient = Places.createClient(view.getContext());
 
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -70,11 +69,12 @@ public class QueryFragments extends Fragment {
                 city = place.getName();
                 latitude = (place.getLatLng().latitude);
                 longitude = (place.getLatLng().longitude);
+                Log.d(TAG, "onPlaceSelected: " + latitude + "    long" + longitude);
                 //Launch search radius Fragment
                 launchSearchRadiusFragment();
 
-            }
 
+            }
 
 
             @Override
@@ -91,7 +91,6 @@ public class QueryFragments extends Fragment {
                 .replace(R.id.fragment_container, searchRadiusFragment, "findThisFragment")
                 .addToBackStack(null)
                 .commit();
-
     }
 
     private void setUpSpinner(View view) {

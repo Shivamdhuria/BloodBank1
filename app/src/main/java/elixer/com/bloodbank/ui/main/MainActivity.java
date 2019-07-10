@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.widget.Toolbar;
@@ -21,18 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUserMetadata;
 
 import java.util.Arrays;
 import java.util.List;
 
 import elixer.com.bloodbank.BaseActivity;
-import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.ui.IntroActivity;
-import elixer.com.bloodbank.ui.campaign.NewCampaign;
+import elixer.com.bloodbank.ui.campaign.NewCampaignActivity;
 import elixer.com.bloodbank.ui.profile.BuildProfile;
 import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
 import elixer.com.bloodbank.ui.requests.RequestsFragment;
@@ -85,7 +81,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                startActivity(new Intent(view.getContext(), NewCampaign.class));
+                startActivity(new Intent(view.getContext(), NewCampaignActivity.class));
             }
         });
 

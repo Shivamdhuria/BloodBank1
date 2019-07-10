@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=D8:AC:14:C9:BC:05:B0:91:2F:36:9E:A2:53:52:9E:6C:04:12:AE:BF%3Belixer.com.bloodbank.ui.campaign
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    D8:AC:14:C9:BC:05:B0:91:2F:36:9E:A2:53:52:9E:6C:04:12:AE:BF
+
+    SHA-1 certificate fingerprint:
+    D8:AC:14:C9:BC:05:B0:91:2F:36:9E:A2:53:52:9E:6C:04:12:AE:BF
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">"AIzaSyAamrmunGQack3BUsPB1MfvxeRh1Ihy68U"</string>
+</resources>

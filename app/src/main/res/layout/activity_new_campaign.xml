@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.campaign.NewCampaign">
+    tools:context=".ui.campaign.NewCampaignActivity">
 
     <FrameLayout
         android:id="@+id/fragment_container"
