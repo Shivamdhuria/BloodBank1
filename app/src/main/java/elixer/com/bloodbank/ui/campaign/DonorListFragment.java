@@ -1,12 +1,15 @@
 package elixer.com.bloodbank.ui.campaign;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import elixer.com.bloodbank.R;
+import elixer.com.bloodbank.ui.main.MainActivity;
 import elixer.com.bloodbank.util.Resource;
 
 public class DonorListFragment extends Fragment {
@@ -26,6 +30,7 @@ public class DonorListFragment extends Fragment {
     private static final String TAG = "DonorListFragment";
     private ProgressBar progressBar;
     private TextView textView;
+    private Button button;
 
 
     @Override
@@ -46,8 +51,19 @@ public class DonorListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBar = view.findViewById(R.id.progressBarDonor);
+        button = view.findViewById(R.id.button_request);
+        button.setEnabled(false);
+
         textView = view.findViewById(R.id.textView);
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.sendRequestToDonors();
+            }
+        });
 
     }
 
@@ -56,7 +72,6 @@ public class DonorListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         viewModel.searchDonors();
         subscribeObservers();
-        textView.setVisibility(View.VISIBLE);
     }
 
     private void subscribeObservers() {
@@ -68,8 +83,9 @@ public class DonorListFragment extends Fragment {
                     switch (listResource.status) {
 
                         case SUCCESS:
-                            Log.d(TAG, "onChanged: SUCCESS" + listResource.data.size());
+                            Log.d(TAG, "onChanged: SUCCESS " + listResource.data.size());
                             showProgressBar(false);
+                            button.setEnabled(true);
                             setUpTextView(true, listResource.data.size() + " Donors Found");
                             break;
                         case LOADING:
@@ -83,6 +99,19 @@ public class DonorListFragment extends Fragment {
                             setUpTextView(true, "Error ");
 
                     }
+                }
+            }
+        });
+
+        viewModel.observeRequestsStatus().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    Toast.makeText(getContext(), "Request Successully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getContext(), MainActivity.class));
+                    getActivity().finish();
+                } else {
+//                    Toast.makeText(getContext(), "Something went Wrong", Toast.LENGTH_SHORT).show();
                 }
             }
         });

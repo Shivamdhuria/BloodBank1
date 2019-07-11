@@ -3,6 +3,7 @@ package elixer.com.bloodbank.repositories;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,13 +11,19 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import elixer.com.bloodbank.models.Request;
 
 public class DonorListRepository {
     private static final String TAG = "DonorListRepository";
@@ -26,6 +33,7 @@ public class DonorListRepository {
     private static FirebaseAuth mAuth;
     private List<String> donorKeyList;
     private MutableLiveData<List<String>> donorList;
+    private MutableLiveData<Boolean> isRequestSuccessful;
 
 
     public static DonorListRepository getInstance(Context context) {
@@ -39,6 +47,8 @@ public class DonorListRepository {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         donorKeyList = new ArrayList<>();
+        isRequestSuccessful = new MutableLiveData<>();
+
 
     }
 
@@ -98,11 +108,46 @@ public class DonorListRepository {
         return donorList;
     }
 
+    public void sendRequests(Request request) {
+
+        isRequestSuccessful.setValue(false);
+        Map<String, Object> updates = new HashMap<>();
+        for (int i = 0; i < donorKeyList.size(); i++) {
+            updates.put("/requests/" + donorKeyList.get(i) + "/" + mAuth.getUid() + "/", request);
+        }
+        mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                isRequestSuccessful.setValue(true);
+            }
+        });
+
+    }
+
+    public LiveData<Boolean> getIsRequestSuccessful() {
+        return isRequestSuccessful;
+    }
+
+    public void setIsRequestSuccessful(MutableLiveData<Boolean> isRequestSuccessful) {
+        this.isRequestSuccessful = isRequestSuccessful;
+    }
+    //        for (int i = 0; i < donorKeyList.size(); i++) {
+//            mDatabase.child(donorKeyList.get(i)).child(Objects.requireNonNull(mAuth.getUid())).setValue(request)
+//                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            if (task.isSuccessful()) {
+//                        isRequestSuccessful
+//                            } else {
+//
+//                            }
+//                        }
+//                    });
+//
+//        }
 
 
 
-
-    
 //    private void getUserByKey(final String key) {
 //        Query donorQuery = mDatabase.child("users").child(key);
 //        donorQuery.addListenerForSingleValueEvent(new ValueEventListener() {

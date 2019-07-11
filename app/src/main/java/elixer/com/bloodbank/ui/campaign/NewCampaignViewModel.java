@@ -25,6 +25,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
     private DonorListRepository donorListRepository;
     private MediatorLiveData<Resource<List<String>>> donors;
 
+
     private static final String TAG = "NewCampaignViewModel";
     private List<String> nully;
 
@@ -65,8 +66,20 @@ public class NewCampaignViewModel extends AndroidViewModel {
     }
 
 
+    public LiveData<Boolean> observeRequestsStatus() {
+        return donorListRepository.getIsRequestSuccessful();
+    }
+
+
+
     public void searchDonors() {
         donorListRepository.SearchForDonorsByLocation(request.getBloodRequired(), latitude, longitude, radius);
+    }
+
+    public void sendRequestToDonors() {
+        if (request != null) {
+            donorListRepository.sendRequests(request);
+        }
     }
 
     public int getRadius() {
