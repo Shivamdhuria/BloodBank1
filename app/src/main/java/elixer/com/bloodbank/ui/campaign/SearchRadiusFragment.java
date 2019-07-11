@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,6 +21,8 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Objects;
 
 import elixer.com.bloodbank.R;
 
@@ -35,7 +38,7 @@ public class SearchRadiusFragment extends Fragment {
     private LatLng currentLocation;
     private Circle circle;
     private Button button_search;
-    private Bundle bundle;
+    NewCampaignViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +53,9 @@ public class SearchRadiusFragment extends Fragment {
         button_search = view.findViewById(R.id.button_search);
         seekBar.setMax(70);
         seekBar.setProgress(radius);
+        button_search = view.findViewById(R.id.button_search);
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -57,8 +63,6 @@ public class SearchRadiusFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-                latitude = 12.9715987;
-                longitude = 77.5945627;
                 // Add a marker in Sydney and move the camera
                 currentLocation = new LatLng(latitude, longitude);
                 mMap.addMarker(new MarkerOptions().position(currentLocation).title(place));
@@ -79,6 +83,8 @@ public class SearchRadiusFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 radius = i;
                 circle.setRadius(radius * 1000);
+                //Setting ViewModel
+                viewModel.setRadius(radius);
             }
 
             @Override
@@ -89,9 +95,29 @@ public class SearchRadiusFragment extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
+        button_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchDonorList();
+            }
+        });
 
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
+        latitude = viewModel.getLatitude();
+        longitude = viewModel.getLongitude();
+    }
 
+    private void launchDonorList() {
+        DonorListFragment donorListFragment = new DonorListFragment();
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, donorListFragment, "findThisFragment")
+                .addToBackStack(null)
+                .commit();
+
+    }
 }

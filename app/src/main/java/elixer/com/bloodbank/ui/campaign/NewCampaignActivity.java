@@ -5,15 +5,19 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 import elixer.com.bloodbank.R;
 
 public class NewCampaignActivity extends AppCompatActivity {
 
+    private NewCampaignViewModel mNewCampaighViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_campaign);
+        mNewCampaighViewModel = ViewModelProviders.of(this).get(NewCampaignViewModel.class);
 
         // Create new fragment and transaction
         Fragment newFragment = new QueryFragments();
@@ -26,5 +30,7 @@ public class NewCampaignActivity extends AppCompatActivity {
 
     // Commit the transaction
         transaction.commit();
+
+
     }
 }
