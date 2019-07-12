@@ -88,6 +88,11 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void showProgressBar(boolean visible) {
+        super.showProgressBar(visible);
+    }
+
     private void subscribeObservers() {
         mMainViewModel.getIsSignedIn().observe(this, new Observer<Boolean>() {
             @Override
@@ -152,8 +157,8 @@ public class MainActivity extends BaseActivity {
 
 
     private void setupViewPager(ViewPager viewPager) {
-        mSectionsPageAdapter.addFragment(new ResponsesFragment(), "Response");
         mSectionsPageAdapter.addFragment(new RequestsFragment(), "Requests");
+        mSectionsPageAdapter.addFragment(new ResponsesFragment(), "Response");
         viewPager.setAdapter(mSectionsPageAdapter);
     }
 

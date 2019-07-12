@@ -11,11 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.models.User;
+import elixer.com.bloodbank.ui.main.MainActivity;
 import elixer.com.bloodbank.util.Resource;
 
 public class ResponsesFragment extends Fragment {
@@ -23,14 +26,24 @@ public class ResponsesFragment extends Fragment {
     private ResponsesViewModel viewModel;
     private static final String TAG = "ResponsesFragment";
 
+    private RecyclerView recyclerView;
+
     public static ResponsesFragment newInstance() {
         return new ResponsesFragment();
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.responses_fragment, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.responses_fragment, container, false);
+        return rootView;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -38,6 +51,11 @@ public class ResponsesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(ResponsesViewModel.class);
         subscribeObservers();
+
+
+    }
+
+    private void initRecycler() {
 
 
     }
@@ -53,14 +71,16 @@ public class ResponsesFragment extends Fragment {
 
                     switch (listResource.status) {
                         case LOADING: {
-                            Log.d(TAG, "onChanged: PostsFragment: LOADING...");
+
+                            Log.d(TAG, "onChanged: ResponseFragment: LOADING...");
                             break;
                         }
 
                         case SUCCESS: {
-                            Log.d(TAG, "onChanged: PostsFragment: got posts.");
+                            Log.d(TAG, "onChanged:ResponsFragment: got posts.");
                             //  adapter.setPosts(listResource.data);
                             Log.d(TAG, "onChanged: " + listResource.data.size());
+
 
                             break;
                         }
