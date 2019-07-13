@@ -38,14 +38,15 @@ public class RequestsRepository {
     }
 
     private RequestsRepository(Context context) {
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("requests").child(mAuth.getUid());
-        Log.e(TAG, "RequestsRepository: "+ mDatabase.toString() );
+
+
     }
 
 
     @NonNull
     public LiveData<Resource<List<Request>>> getUserLiveData() {
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("requests").child(mAuth.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
         return Transformations.map(mLiveData, new DeserializerUserList());
 
@@ -62,7 +63,7 @@ public class RequestsRepository {
                 Request request = snap.getValue(Request.class);
                 uList.add(request);
             }
-
+            Log.e(TAG, "apply.....: "+ uList.size());
             return Resource.success(uList);
             //TODO: Define Resource.error for errror case or unable to fetch
         }

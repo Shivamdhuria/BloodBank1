@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -27,12 +28,12 @@ import java.util.List;
 import elixer.com.bloodbank.BaseActivity;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
-import elixer.com.bloodbank.ui.IntroActivity;
+import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.ui.campaign.NewCampaignActivity;
-import elixer.com.bloodbank.ui.profile.BuildProfile;
 import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
 import elixer.com.bloodbank.ui.requests.RequestsFragment;
 import elixer.com.bloodbank.util.LocalProperties;
+import elixer.com.bloodbank.util.Resource;
 
 import static elixer.com.bloodbank.util.Constants.RC_SIGN_IN;
 
@@ -47,8 +48,10 @@ public class MainActivity extends BaseActivity {
      */
     private ViewPager mViewPager;
     private SharedPreferences mSharedPreference;
-
     private MainViewModel mMainViewModel;
+    private TextView textViewName;
+    private TextView textViewLevel;
+    LocalProperties localProperties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,8 @@ public class MainActivity extends BaseActivity {
 
 
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
-        //Check if App is run first Time
-        checkIfFirstTime();
+        localProperties = new LocalProperties(mSharedPreference);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -70,6 +73,10 @@ public class MainActivity extends BaseActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        textViewName = findViewById(R.id.textView_name);
+        textViewLevel = findViewById(R.id.textView_level);
+        updateTextView();
+
 
 
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -97,7 +104,6 @@ public class MainActivity extends BaseActivity {
         mMainViewModel.getIsSignedIn().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
-                Log.e(TAG, "onChanged:...... "+ aBoolean.toString() );
                 if (aBoolean != null) {
                     //Start Sign In with AuthUI
                     if (!aBoolean) {
@@ -108,6 +114,41 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        mMainViewModel.getUser().observe(this, new Observer<Resource<User>>() {
+            @Override
+            public void onChanged(Resource<User> userResource) {
+                if (userResource != null) {
+                    switch (userResource.status) {
+                        case LOADING:
+                            //TODO: Show progress bar
+                            break;
+                        case ERROR:
+                            //TODO: Show error and logout
+                            break;
+                        case SUCCESS:
+                            Log.d(TAG, "onChanged: SUCEESS" + userResource.data.getName());
+                            //TODO: Update TextView and Shared Preferences
+                            updateSharedPref(userResource.data);
+
+
+                            break;
+
+
+                    }
+                }
+            }
+        });
+    }
+
+    private void updateSharedPref(User data) {
+
+        localProperties.saveUserObject(data);
+    }
+
+    private void updateTextView() {
+
+        textViewName.setText(localProperties.retrieveUserObject().getName());
+        textViewLevel.setText(String.valueOf(localProperties.retrieveUserObject().getLevel()));
     }
 
     private void startSignIn() {
@@ -127,16 +168,6 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void checkIfFirstTime() {
-        LocalProperties localProperties = new LocalProperties(mSharedPreference);
-        if (localProperties.retrieveIfFirstTime()) {
-            Log.e(TAG, "checkIfFirstTime: " + localProperties.retrieveIfFirstTime());
-            Intent intent = new Intent(this, IntroActivity.class);
-            startActivity(intent);
-            localProperties.storeIfFirstTime();
-        }
-
-    }
 
 
     @Override
@@ -174,15 +205,12 @@ public class MainActivity extends BaseActivity {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-                startActivity(new Intent(MainActivity.this, BuildProfile.class));
-
-//                FirebaseUserMetadata metadata = FirebaseAuth.getInstance().getCurrentUser().getMetadata();
-//                if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
-//                    // The user is new, show them a fancy intro screen!
-//                } else {
-//                    // This is an existing user, show them a welcome back screen.
-//                }
+                mMainViewModel.fetchUserDetailsFromDatabase();
+                //Relaunching Activity as Fragments are hard to refresh for some reason
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+
+
             } else {
                 // Sign in failed
                 if (response == null) {
@@ -200,5 +228,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
 
 }

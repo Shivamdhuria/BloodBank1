@@ -32,6 +32,8 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onCreate(savedInstanceState);
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
         localProperties = new LocalProperties(mSharedPreference);
+
+        //Launch Main Activity if not launched the first time
         checkIfFirstTime();
 
         addSlide(new SlideFragmentBuilder()

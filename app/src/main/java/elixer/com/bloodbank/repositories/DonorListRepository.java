@@ -44,8 +44,7 @@ public class DonorListRepository {
     }
 
     private DonorListRepository(Context context) {
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         donorKeyList = new ArrayList<>();
         isRequestSuccessful = new MutableLiveData<>();
 
@@ -54,6 +53,8 @@ public class DonorListRepository {
 
 
     public void SearchForDonorsByLocation(String bloodgroup, Double latitude, Double longitude, int radius) {
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         donorKeyList.clear();
         if (donorList == null) {
             donorList = new MutableLiveData<>();

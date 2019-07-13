@@ -12,14 +12,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -39,26 +37,22 @@ import elixer.com.bloodbank.util.LocalProperties;
 
 public class BuildProfile extends AppCompatActivity {
 
+    private static final String TAG = "BuildProfile";
+
     private static List<String> BLOOD_GROUPS;
-
-
-    private Toolbar toolbar;
-    int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     Double latitude, longitude;
     String city;
     EditText name, age, phoneNumber;
     private Button submitButton;
-    // Set the fields to specify which types of place data to
-// return after the user has made a selection.
-    List<Place.Field> fields;
-
-
     MaterialSpinner spinner;
 
+    // Set the fields to specify which types of place data to
+    // return after the user has made a selection.
+    List<Place.Field> fields;
     private SharedPreferences mSharedPreference;
     private BuildProfileViewModel mBuildProfileViewModel;
-    private static final String TAG = "BuildProfile";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +68,7 @@ public class BuildProfile extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         phoneNumber.setText(user.getPhoneNumber());
-
-
-
-
         fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-
 
         setUpSpinner();
         mBuildProfileViewModel = ViewModelProviders.of(this).get(BuildProfileViewModel.class);
@@ -87,17 +76,11 @@ public class BuildProfile extends AppCompatActivity {
 
         // Initialize Places.
         Places.initialize(getApplicationContext(), BuildConfig.PlacesApiKey);
-
-        // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
-
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -122,7 +105,6 @@ public class BuildProfile extends AppCompatActivity {
                 writeToDatabase();
             }
         });
-
     }
 
     private void subscribeObservers() {
@@ -132,17 +114,12 @@ public class BuildProfile extends AppCompatActivity {
 
                 if (aBoolean != null) {
                     if (aBoolean) {
-
-
                         //Successfully wrote
                         Log.e(TAG, "Successfully Saved to Database " + aBoolean.toString());
                         //TODO Use live data for shared preference
                         saveUserToSharedPref();
                         startActivity(new Intent(getApplication(), MainActivity.class));
-
-
                     } else {
-
                         //Failed to Write Profile
                         Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                     }

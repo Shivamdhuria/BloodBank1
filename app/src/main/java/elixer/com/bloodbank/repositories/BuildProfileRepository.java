@@ -29,7 +29,7 @@ public class BuildProfileRepository {
     private static BuildProfileRepository instance;
 
     public BuildProfileRepository() {
-        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     public static BuildProfileRepository getInstance() {
@@ -41,7 +41,7 @@ public class BuildProfileRepository {
 
     public LiveData<Boolean> AddProfileAndLocation(Profile profile) {
         final MutableLiveData<Boolean> status = new MutableLiveData<>();
-
+        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentFirebaseUser.getUid();
         DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference();

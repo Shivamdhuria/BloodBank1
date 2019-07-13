@@ -54,7 +54,6 @@ public class ResponsesRepository {
         public Resource<List<User>> apply(DataSnapshot dataSnapshot) {
             uList.clear();
             for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                //Log.d("TAG","Peeru Value"+snap.getValue().toString());
                 User user = snap.getValue(User.class);
                 uList.add(user);
             }
