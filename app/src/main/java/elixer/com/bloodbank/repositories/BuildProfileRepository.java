@@ -2,6 +2,10 @@ package elixer.com.bloodbank.repositories;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.core.GeoHash;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,47 +19,56 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import elixer.com.bloodbank.models.User;
+import elixer.com.bloodbank.models.Profile;
 
 public class BuildProfileRepository {
 
     private static final String TAG = "BuildProfileRepository";
-    FirebaseUser currentFirebaseUser;
+
+    private FirebaseUser currentFirebaseUser;
+    private static BuildProfileRepository instance;
 
     public BuildProfileRepository() {
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void AddProfileAndLocation(String phoneNumber, String bloodGroup, String name, String city, int level, int age, Double latitude, Double longitude) {
+    public static BuildProfileRepository getInstance() {
+        if (instance == null) {
+            instance = new BuildProfileRepository();
+        }
+        return instance;
+    }
+
+    public LiveData<Boolean> AddProfileAndLocation(Profile profile) {
+        final MutableLiveData<Boolean> status = new MutableLiveData<>();
+
         String userID = currentFirebaseUser.getUid();
         DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Log.d(TAG, "USer Id  " + userID);
 
-        final User user = new User(phoneNumber, bloodGroup, name, city, level, age);
-        GeoHash geoHash = new GeoHash(new GeoLocation(latitude, longitude));
+        GeoHash geoHash = new GeoHash(new GeoLocation(profile.getLatitude(), profile.getLongitude()));
         Map<String, Object> updates = new HashMap<>();
 
-        updates.put("users/" + userID, user);
-        updates.put(bloodGroup + "/" + userID + "/g", geoHash.getGeoHashString());
-        updates.put(bloodGroup + "/" + userID + "/l", Arrays.asList(latitude, longitude));
+        updates.put("users/" + userID, profile.getUser());
+        updates.put(profile.getBloodGroup() + "/" + userID + "/g", geoHash.getGeoHashString());
+        updates.put(profile.getBloodGroup() + "/" + userID + "/l", Arrays.asList(profile.getLatitude(), profile.getLongitude()));
         mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                if (task == null) {
-                    //Database Push failed
+                if (task.isSuccessful()) {
+                    //Success
+                    Log.d(TAG, "onComplete: Profile Successfully Written to Database");
+                    status.setValue(true);
 
                 } else {
-                    //Success
-                    Log.d(TAG, "onComplete: SUCESSFULLY WROTE");
+                    //Database Push failed
+                    status.setValue(false);
+
                 }
-
-
             }
         });
-
-
+        return status;
     }
 }

@@ -118,7 +118,9 @@ public class DonorListRepository {
         mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                isRequestSuccessful.setValue(true);
+                if (task.isSuccessful()) {
+                    isRequestSuccessful.setValue(true);
+                }
             }
         });
 

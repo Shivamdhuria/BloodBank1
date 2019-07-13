@@ -19,7 +19,7 @@ public class MainViewModel extends ViewModel {
         isSignedIn.setValue(FirebaseAuth.getInstance().getCurrentUser() != null);
     }
 
-    public LiveData<Boolean> getIsSignedIn() {
+    public LiveData<Boolean> getIsSignedIn()  {
         return isSignedIn;
     }
 

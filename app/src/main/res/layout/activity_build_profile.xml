@@ -15,18 +15,18 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/testingInputLayout"
+            android:id="@+id/NameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:theme="@style/AppIntro">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/testingEditText"
+                android:id="@+id/editText_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
-                android:inputType="textEmailAddress" />
+                android:inputType="numberDecimal"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

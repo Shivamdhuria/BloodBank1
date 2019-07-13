@@ -1,13 +1,11 @@
 package elixer.com.bloodbank.util;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import elixer.com.bloodbank.BuildConfig;
+import com.google.gson.Gson;
 
-import static android.content.ContentValues.TAG;
-import static android.content.Context.MODE_PRIVATE;
+import elixer.com.bloodbank.models.User;
 
 public class LocalProperties {
 
@@ -28,6 +26,21 @@ public class LocalProperties {
         return mSharedPreferences.getBoolean(TOKEN, true);
 
     }
+
+    public void saveUserObject(User user) {
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        mSharedPreferences.edit().putString("User", json).apply();
+
+    }
+
+    public User retrieveUserObject() {
+        Gson gson = new Gson();
+        String json = mSharedPreferences.getString("User", "");
+        User user = gson.fromJson(json, User.class);
+        return user;
+    }
+
 
 
 }

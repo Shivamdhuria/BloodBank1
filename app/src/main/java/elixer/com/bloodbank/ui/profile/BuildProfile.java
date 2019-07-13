@@ -1,10 +1,20 @@
 package elixer.com.bloodbank.ui.profile;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -20,29 +30,34 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.repositories.BuildProfileRepository;
+import elixer.com.bloodbank.models.Profile;
+import elixer.com.bloodbank.models.User;
+import elixer.com.bloodbank.ui.main.MainActivity;
+import elixer.com.bloodbank.util.LocalProperties;
 
 public class BuildProfile extends AppCompatActivity {
 
     private static List<String> BLOOD_GROUPS;
 
-    private Button submitButton;
+
     private Toolbar toolbar;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     Double latitude, longitude;
     String city;
     EditText name, age, phoneNumber;
+    private Button submitButton;
     // Set the fields to specify which types of place data to
 // return after the user has made a selection.
     List<Place.Field> fields;
 
-    BuildProfileRepository buildProfileRepository;
+
     MaterialSpinner spinner;
+
+    private SharedPreferences mSharedPreference;
+    private BuildProfileViewModel mBuildProfileViewModel;
     private static final String TAG = "BuildProfile";
 
     @Override
@@ -50,19 +65,25 @@ public class BuildProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_build_profile);
         submitButton = findViewById(R.id.btn_submit);
-        name = (EditText) findViewById(R.id.name);
+        name = (EditText) findViewById(R.id.editText_name);
         age = findViewById(R.id.editText_age);
         phoneNumber = findViewById(R.id.phone_edit);
+
+
+        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         phoneNumber.setText(user.getPhoneNumber());
 
 
 
 
         fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-        buildProfileRepository = new BuildProfileRepository();
+
+
         setUpSpinner();
-//        Log.e(TAG, "onCreate:"+  BuildConfig.API_KEY );
+        mBuildProfileViewModel = ViewModelProviders.of(this).get(BuildProfileViewModel.class);
+        subscribeObservers();
 
         // Initialize Places.
         Places.initialize(getApplicationContext(), BuildConfig.PlacesApiKey);
@@ -98,16 +119,50 @@ public class BuildProfile extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Remove all repository reference and use ViewModel
-                buildProfileRepository.AddProfileAndLocation(phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
-                        age.getText().toString(), city, 0, 23, latitude, longitude);
+                writeToDatabase();
             }
         });
 
     }
 
-    private void writeToDatabase(String toString, String s, EditText name, String city, int i, EditText age, Double latitude, Double longitude) {
-        // buildProfileRepository.AddProfileAndLocation();
+    private void subscribeObservers() {
+        mBuildProfileViewModel.getIsSuccesfullySavedToDatabase().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+
+                if (aBoolean != null) {
+                    if (aBoolean) {
+
+
+                        //Successfully wrote
+                        Log.e(TAG, "Successfully Saved to Database " + aBoolean.toString());
+                        //TODO Use live data for shared preference
+                        saveUserToSharedPref();
+                        startActivity(new Intent(getApplication(), MainActivity.class));
+
+
+                    } else {
+
+                        //Failed to Write Profile
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void saveUserToSharedPref() {
+        LocalProperties localProperties = new LocalProperties(mSharedPreference);
+        localProperties.saveUserObject(mBuildProfileViewModel.getProfile().getUser());
+    }
+
+    private void writeToDatabase() {
+        User user = new User(name.getText().toString(), phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
+                city, 0, Integer.parseInt(age.getText().toString()));
+        Profile profile = new Profile(user, latitude, longitude);
+        mBuildProfileViewModel.setProfile(profile);
+        mBuildProfileViewModel.writeProfileToDatabase();
     }
 
     private void setUpSpinner() {
