@@ -35,6 +35,15 @@ public class NewCampaignViewModel extends AndroidViewModel {
         donorListRepository = DonorListRepository.getInstance(application);
     }
 
+    //For Query Fragment
+    public void setRequest(Request request) {
+        this.request = request;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
 
     public LiveData<Resource<List<String>>> observeDonors() {
         if (donors == null) {
@@ -86,20 +95,12 @@ public class NewCampaignViewModel extends AndroidViewModel {
         return radius;
     }
 
+
+
     public void setRadius(int radius) {
-        this.radius = radius;
     }
 
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public double getLongitude() {
+        public double getLongitude() {
         return longitude;
     }
 

@@ -108,7 +108,6 @@ public class DonorListFragment extends Fragment {
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     Toast.makeText(getContext(), "Request Successully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getContext(), MainActivity.class));
                     getActivity().finish();
                 } else {
 //                    Toast.makeText(getContext(), "Something went Wrong", Toast.LENGTH_SHORT).show();

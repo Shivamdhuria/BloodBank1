@@ -3,16 +3,16 @@ package elixer.com.bloodbank.util;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.lifecycle.LiveData;
-
 public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
-    private static final String LOG_TAG = "FirebaseQueryLiveData";
+    private static final String TAG = "FirebaseQueryLiveData";
 
     private final Query query;
     private final ValueEventListener valueListener = new mValueEventListener();
@@ -63,7 +63,7 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            Log.e(LOG_TAG, "Cannot listen to query " + query, databaseError.toException());
+            Log.e(TAG, "Cannot listen to query " + query, databaseError.toException());
         }
     }
 

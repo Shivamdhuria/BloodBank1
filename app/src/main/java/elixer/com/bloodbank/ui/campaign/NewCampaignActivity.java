@@ -20,15 +20,13 @@ public class NewCampaignActivity extends AppCompatActivity {
         mNewCampaighViewModel = ViewModelProviders.of(this).get(NewCampaignViewModel.class);
 
         // Create new fragment and transaction
-        Fragment newFragment = new QueryFragments();
+        Fragment newFragment = new QueryFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-    // Replace whatever is in the fragment_container view with this fragment,
-    // and add the transaction to the back stack
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-    // Commit the transaction
+          // Commit the transaction
         transaction.commit();
 
 

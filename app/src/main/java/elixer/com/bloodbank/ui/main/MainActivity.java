@@ -30,6 +30,7 @@ import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.ui.campaign.NewCampaignActivity;
+import elixer.com.bloodbank.ui.profile.BuildProfile;
 import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
 import elixer.com.bloodbank.ui.requests.RequestsFragment;
 import elixer.com.bloodbank.util.LocalProperties;
@@ -101,6 +102,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void subscribeObservers() {
+        //For observing Sign In State
         mMainViewModel.getIsSignedIn().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
@@ -114,6 +116,7 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        //For Observing if Uder isn't non null
         mMainViewModel.getUser().observe(this, new Observer<Resource<User>>() {
             @Override
             public void onChanged(Resource<User> userResource) {
@@ -121,14 +124,23 @@ public class MainActivity extends BaseActivity {
                     switch (userResource.status) {
                         case LOADING:
                             //TODO: Show progress bar
+                            showProgressBar(true);
                             break;
                         case ERROR:
-                            //TODO: Show error and logout
+                            //Launch BuildProfile Activity
+                            showProgressBar(false);
+                            Log.d(TAG, "onChanged: ERROR");
+                            startActivity(new Intent(getApplicationContext(), BuildProfile.class));
+                            finish();
                             break;
                         case SUCCESS:
                             Log.d(TAG, "onChanged: SUCEESS" + userResource.data.getName());
+                            showProgressBar(false);
                             //TODO: Update TextView and Shared Preferences
                             updateSharedPref(userResource.data);
+                            //Relaunching Activity as Fragments are hard to refresh for some reason
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
 
 
                             break;
@@ -141,14 +153,15 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateSharedPref(User data) {
-
         localProperties.saveUserObject(data);
+
     }
 
     private void updateTextView() {
-
+        if (localProperties.retrieveUserObject() != null) {
         textViewName.setText(localProperties.retrieveUserObject().getName());
-        textViewLevel.setText(String.valueOf(localProperties.retrieveUserObject().getLevel()));
+            textViewLevel.setText(String.valueOf(localProperties.retrieveUserObject().getLevel()));
+        }
     }
 
     private void startSignIn() {
@@ -205,10 +218,8 @@ public class MainActivity extends BaseActivity {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
+                showProgressBar(true);
                 mMainViewModel.fetchUserDetailsFromDatabase();
-                //Relaunching Activity as Fragments are hard to refresh for some reason
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
 
 
             } else {

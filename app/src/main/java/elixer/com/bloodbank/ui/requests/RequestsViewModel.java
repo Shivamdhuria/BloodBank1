@@ -38,7 +38,7 @@ public class RequestsViewModel extends AndroidViewModel {
                 public void onChanged(Resource<List<Request>> listResource) {
                     requests.setValue(listResource);
 //                    //Remove source for real time databse
-                   requests.removeSource(source);
+//                   requests.removeSource(source);
                 }
             });
         }

@@ -19,7 +19,7 @@ import elixer.com.bloodbank.util.Resource;
 
 public class MainRepository {
 
-    private static final String TAG = "Main Profile Repository";
+    private static final String TAG = "MainRepository";
 
     private FirebaseUser currentFirebaseUser;
     private static MainRepository instance;
@@ -39,6 +39,7 @@ public class MainRepository {
 
     @NonNull
     public LiveData<Resource<User>> getUserFromDatabase() {
+
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(currentFirebaseUser.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
@@ -51,13 +52,20 @@ public class MainRepository {
 
         @Override
         public Resource<User> apply(DataSnapshot dataSnapshot) {
+
+
             Resource res = null;
 
             if (dataSnapshot.getValue(User.class) != null) {
                 res = Resource.success(dataSnapshot.getValue(User.class));
             } else {
                 res = Resource.error("Not Found", null);
+
+
             }
+
+
+            Log.e(TAG, "apply: " + res.status.toString());
 
             return res;
         }

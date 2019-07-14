@@ -22,11 +22,11 @@
             android:theme="@style/AppIntro">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_name"
+                android:id="@+id/edit_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
-                android:inputType="numberDecimal"/>
+                android:inputType="textCapWords|textCapSentences"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

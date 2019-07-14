@@ -1,6 +1,8 @@
 package elixer.com.bloodbank.ui.campaign;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +29,9 @@ import java.util.Objects;
 import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.models.Request;
+import elixer.com.bloodbank.util.LocalProperties;
 
-public class QueryFragments extends Fragment {
+public class QueryFragment extends Fragment {
 
     private static List<String> BLOOD_GROUPS;
     MaterialSpinner spinner;
@@ -38,16 +41,13 @@ public class QueryFragments extends Fragment {
     private NewCampaignViewModel viewModel;
     Button button;
     private static final String TAG = "QueryFragments";
+    private LocalProperties localProperties;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.query_fragment, container, false);
-
-
-
-
     }
 
     @Override
@@ -55,16 +55,18 @@ public class QueryFragments extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setUpSpinner(view);
         button =view.findViewById(R.id.button_radius);
+        SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+        localProperties = new LocalProperties(mSharedPreference);
+        subscribeObserver();
+
+
         // Initialize Places.
         Places.initialize(view.getContext(), BuildConfig.PlacesApiKey);
-
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -77,12 +79,7 @@ public class QueryFragments extends Fragment {
                 Log.d(TAG, "onPlaceSelected: " + latitude + "    long" + longitude);
                 //Save request Model
                 saveInViewModel();
-                //Launch search radius Fragment
-                //  launchSearchRadiusFragment();
-
-
             }
-
 
             @Override
             public void onError(Status status) {
@@ -90,7 +87,6 @@ public class QueryFragments extends Fragment {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,9 +95,13 @@ public class QueryFragments extends Fragment {
         });
     }
 
+    private void subscribeObserver() {
+   //
+    }
+
     private void saveInViewModel() {
-        //Add name in shared Pref
-        request = new Request("example", BLOOD_GROUPS.get(spinner.getSelectedIndex()), System.currentTimeMillis(), city, false);
+        request = new Request(localProperties.retrieveUserObject().getName(),
+                BLOOD_GROUPS.get(spinner.getSelectedIndex()), System.currentTimeMillis(), city, false);
         viewModel.setRequest(request);
         viewModel.setLatitude(latitude);
         viewModel.setLongitude(longitude);
@@ -112,10 +112,7 @@ public class QueryFragments extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
-
     }
-
-
 
     private void launchSearchRadiusFragment() {
         SearchRadiusFragment searchRadiusFragment = new SearchRadiusFragment();

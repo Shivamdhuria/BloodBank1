@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import elixer.com.bloodbank.models.Profile;
+import elixer.com.bloodbank.models.User;
 
 public class BuildProfileRepository {
 
@@ -39,7 +39,7 @@ public class BuildProfileRepository {
         return instance;
     }
 
-    public LiveData<Boolean> AddProfileAndLocation(Profile profile) {
+    public LiveData<Boolean> AddUserAndLocation(User user, double lat, double longi) {
         final MutableLiveData<Boolean> status = new MutableLiveData<>();
         currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String userID = currentFirebaseUser.getUid();
@@ -47,12 +47,12 @@ public class BuildProfileRepository {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Log.d(TAG, "USer Id  " + userID);
 
-        GeoHash geoHash = new GeoHash(new GeoLocation(profile.getLatitude(), profile.getLongitude()));
+        GeoHash geoHash = new GeoHash(new GeoLocation(lat, longi));
         Map<String, Object> updates = new HashMap<>();
 
-        updates.put("users/" + userID, profile.getUser());
-        updates.put(profile.getBloodGroup() + "/" + userID + "/g", geoHash.getGeoHashString());
-        updates.put(profile.getBloodGroup() + "/" + userID + "/l", Arrays.asList(profile.getLatitude(), profile.getLongitude()));
+        updates.put("users/" + userID, user);
+        updates.put(user.getBloodGroup() + "/" + userID + "/g", geoHash.getGeoHashString());
+        updates.put(user.getBloodGroup() + "/" + userID + "/l", Arrays.asList(lat, longi));
         mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

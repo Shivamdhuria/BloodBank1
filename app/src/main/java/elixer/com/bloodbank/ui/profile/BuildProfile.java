@@ -30,7 +30,6 @@ import java.util.List;
 
 import elixer.com.bloodbank.BuildConfig;
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.models.Profile;
 import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.ui.main.MainActivity;
 import elixer.com.bloodbank.util.LocalProperties;
@@ -46,6 +45,7 @@ public class BuildProfile extends AppCompatActivity {
     EditText name, age, phoneNumber;
     private Button submitButton;
     MaterialSpinner spinner;
+    User user;
 
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
@@ -59,7 +59,7 @@ public class BuildProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_build_profile);
         submitButton = findViewById(R.id.btn_submit);
-        name = (EditText) findViewById(R.id.editText_name);
+        name = findViewById(R.id.edit_name);
         age = findViewById(R.id.editText_age);
         phoneNumber = findViewById(R.id.phone_edit);
 
@@ -118,7 +118,9 @@ public class BuildProfile extends AppCompatActivity {
                         Log.e(TAG, "Successfully Saved to Database " + aBoolean.toString());
                         //TODO Use live data for shared preference
                         saveUserToSharedPref();
+
                         startActivity(new Intent(getApplication(), MainActivity.class));
+                        finish();
                     } else {
                         //Failed to Write Profile
                         Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
@@ -131,15 +133,15 @@ public class BuildProfile extends AppCompatActivity {
 
     private void saveUserToSharedPref() {
         LocalProperties localProperties = new LocalProperties(mSharedPreference);
-        localProperties.saveUserObject(mBuildProfileViewModel.getProfile().getUser());
+        localProperties.saveUserObject(user);
     }
 
     private void writeToDatabase() {
-        User user = new User(name.getText().toString(), phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
+        user = new User(name.getText().toString(), phoneNumber.getText().toString(), BLOOD_GROUPS.get(spinner.getSelectedIndex()),
                 city, 0, Integer.parseInt(age.getText().toString()));
-        Profile profile = new Profile(user, latitude, longitude);
-        mBuildProfileViewModel.setProfile(profile);
-        mBuildProfileViewModel.writeProfileToDatabase();
+        Log.d(TAG, "writeToDatabase: " + user.toString());
+
+        mBuildProfileViewModel.writeProfileToDatabase(user, latitude, longitude);
     }
 
     private void setUpSpinner() {
@@ -155,7 +157,7 @@ public class BuildProfile extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Selected " + item, Snackbar.LENGTH_LONG).show();
             }
         });
     }
