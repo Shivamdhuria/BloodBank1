@@ -53,11 +53,10 @@ public class QueryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpSpinner(view);
         button =view.findViewById(R.id.button_radius);
         SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         localProperties = new LocalProperties(mSharedPreference);
-        subscribeObserver();
+
 
 
         // Initialize Places.
@@ -83,20 +82,16 @@ public class QueryFragment extends Fragment {
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchSearchRadiusFragment();
             }
         });
-    }
-
-    private void subscribeObserver() {
-   //
     }
 
     private void saveInViewModel() {
@@ -112,6 +107,7 @@ public class QueryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
+        setUpSpinner(getView());
     }
 
     private void launchSearchRadiusFragment() {
@@ -125,16 +121,22 @@ public class QueryFragment extends Fragment {
     private void setUpSpinner(View view) {
         BLOOD_GROUPS = Arrays.asList(getResources().getStringArray(R.array.blood_groups));
         spinner = (MaterialSpinner) view.findViewById(R.id.spinner);
-        spinner.setOnClickListener(new View.OnClickListener() {
+        if (viewModel.getBloodGroupIndex() != -1) {
+            spinner.setItems(BLOOD_GROUPS);
+            spinner.setSelectedIndex(viewModel.getBloodGroupIndex());
+        } else {
+            spinner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    spinner.setItems(BLOOD_GROUPS);
+                }
+            });
+        }
+        spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                spinner.setItems(BLOOD_GROUPS);
-
-            }
-        });
-        spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                Log.d(TAG, "onItemSelected:.... " + spinner.getSelectedIndex());
+                viewModel.setBloodGroupIndex(spinner.getSelectedIndex());
                 Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
             }
         });

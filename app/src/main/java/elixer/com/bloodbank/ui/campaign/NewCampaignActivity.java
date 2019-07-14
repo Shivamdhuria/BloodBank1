@@ -21,13 +21,16 @@ public class NewCampaignActivity extends AppCompatActivity {
 
         // Create new fragment and transaction
         Fragment newFragment = new QueryFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, newFragment);
-          // Commit the transaction
-        transaction.commit();
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.fragment_container, newFragment);
+            // Commit the transaction
+            transaction.commit();
+        }
+
 
 
     }

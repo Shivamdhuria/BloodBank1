@@ -1,6 +1,5 @@
 package elixer.com.bloodbank.ui.campaign;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.ui.main.MainActivity;
 import elixer.com.bloodbank.util.Resource;
 
 public class DonorListFragment extends Fragment {

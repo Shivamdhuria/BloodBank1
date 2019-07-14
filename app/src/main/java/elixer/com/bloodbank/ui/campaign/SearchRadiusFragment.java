@@ -82,7 +82,9 @@ public class SearchRadiusFragment extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 radius = i;
-                circle.setRadius(radius * 1000);
+                if (circle != null) {
+                    circle.setRadius(radius * 1000);
+                }
                 //Setting ViewModel
                 viewModel.setRadius(radius);
             }
@@ -108,6 +110,7 @@ public class SearchRadiusFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
+        radius = viewModel.getRadius();
         latitude = viewModel.getLatitude();
         longitude = viewModel.getLongitude();
     }

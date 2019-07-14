@@ -1,6 +1,7 @@
 package elixer.com.bloodbank.ui.campaign;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -19,6 +20,7 @@ import elixer.com.bloodbank.util.Resource;
 public class NewCampaignViewModel extends AndroidViewModel {
 
     private Request request;
+    private int bloodGroupIndex;
     private double latitude;
     private double longitude;
     private int radius;
@@ -33,16 +35,25 @@ public class NewCampaignViewModel extends AndroidViewModel {
         super(application);
         request = new Request();
         donorListRepository = DonorListRepository.getInstance(application);
+        bloodGroupIndex = -1;
     }
 
     //For Query Fragment
+    public int getBloodGroupIndex() {
+        return bloodGroupIndex;
+    }
+    public void setBloodGroupIndex(int bloodGroupIndex) {
+        this.bloodGroupIndex = bloodGroupIndex;
+    }
+
     public void setRequest(Request request) {
         this.request = request;
     }
-
     public Request getRequest() {
         return request;
     }
+
+
 
 
     public LiveData<Resource<List<String>>> observeDonors() {
@@ -98,6 +109,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
 
 
     public void setRadius(int radius) {
+        this.radius = radius;
     }
 
         public double getLongitude() {

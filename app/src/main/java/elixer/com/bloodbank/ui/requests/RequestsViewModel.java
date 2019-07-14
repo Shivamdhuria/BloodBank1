@@ -1,6 +1,7 @@
 package elixer.com.bloodbank.ui.requests;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
