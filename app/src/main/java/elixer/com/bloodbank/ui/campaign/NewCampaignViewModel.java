@@ -29,8 +29,6 @@ public class NewCampaignViewModel extends AndroidViewModel {
 
 
     private static final String TAG = "NewCampaignViewModel";
-    private List<String> nully;
-
     public NewCampaignViewModel(@NonNull Application application) {
         super(application);
         request = new Request();
@@ -45,8 +43,8 @@ public class NewCampaignViewModel extends AndroidViewModel {
     public void setBloodGroupIndex(int bloodGroupIndex) {
         this.bloodGroupIndex = bloodGroupIndex;
     }
-
     public void setRequest(Request request) {
+
         this.request = request;
     }
     public Request getRequest() {
@@ -54,7 +52,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
     }
 
 
-
+    //For Donor List Fragment
 
     public LiveData<Resource<List<String>>> observeDonors() {
         if (donors == null) {
@@ -90,10 +88,12 @@ public class NewCampaignViewModel extends AndroidViewModel {
         return donorListRepository.getIsRequestSuccessful();
     }
 
-
-
     public void searchDonors() {
+        Log.e(TAG, "searchDonors: ");
+
+        Log.e(TAG, "searchingDonors:..... query not same ");
         donorListRepository.SearchForDonorsByLocation(request.getBloodRequired(), latitude, longitude, radius);
+
     }
 
     public void sendRequestToDonors() {
@@ -102,17 +102,16 @@ public class NewCampaignViewModel extends AndroidViewModel {
         }
     }
 
+
     public int getRadius() {
         return radius;
     }
-
-
 
     public void setRadius(int radius) {
         this.radius = radius;
     }
 
-        public double getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 

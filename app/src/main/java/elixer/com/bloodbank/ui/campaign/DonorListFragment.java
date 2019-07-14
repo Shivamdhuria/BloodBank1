@@ -53,9 +53,6 @@ public class DonorListFragment extends Fragment {
         button.setEnabled(false);
 
         textView = view.findViewById(R.id.textView);
-        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
-
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,12 +65,14 @@ public class DonorListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
+
         viewModel.searchDonors();
         subscribeObservers();
     }
 
     private void subscribeObservers() {
-
+        Log.e(TAG, "subscribeObservers: " );
         viewModel.observeDonors().observe(getViewLifecycleOwner(), new Observer<Resource<List<String>>>() {
             @Override
             public void onChanged(Resource<List<String>> listResource) {

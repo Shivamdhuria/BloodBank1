@@ -2,6 +2,7 @@ package elixer.com.bloodbank.ui.campaign;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import elixer.com.bloodbank.R;
 public class SearchRadiusFragment extends Fragment {
 
     private GoogleMap mMap;
+    private static final String TAG = "SearchRadiusFragment";
 
     private String place;
     private Double latitude;
@@ -45,6 +47,11 @@ public class SearchRadiusFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.search_radius_fragmemt, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
