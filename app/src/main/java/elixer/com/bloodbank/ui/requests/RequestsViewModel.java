@@ -15,13 +15,13 @@ import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.repositories.RequestsRepository;
 import elixer.com.bloodbank.util.Resource;
 
-public class ResponseViewModel extends AndroidViewModel {
+public class RequestsViewModel extends AndroidViewModel {
 
-    private static final String TAG = "ResponseViewModel";
+    private static final String TAG = "RequestsViewModel";
     private MediatorLiveData<Resource<List<Request>>> requests;
     private RequestsRepository requestsRepository;
 
-    public ResponseViewModel(@NonNull Application application) {
+    public RequestsViewModel(@NonNull Application application) {
         super(application);
         requestsRepository = RequestsRepository.getInstance(application);
     }

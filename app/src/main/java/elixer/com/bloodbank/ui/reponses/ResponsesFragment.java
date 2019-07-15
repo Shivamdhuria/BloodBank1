@@ -23,14 +23,14 @@ import java.util.List;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
 import elixer.com.bloodbank.models.Request;
-import elixer.com.bloodbank.ui.requests.ResponseViewModel;
+import elixer.com.bloodbank.ui.requests.RequestsViewModel;
 import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
 public class ResponsesFragment extends Fragment {
 
-    private ResponseViewModel viewModel;
+    private RequestsViewModel viewModel;
     private static final String TAG = "ResponseFragment";
     RecyclerView recyclerView;
     RequestRecyclerAdapter mAdapter;
@@ -49,7 +49,7 @@ public class ResponsesFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(ResponseViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(RequestsViewModel.class);
         subscribeObservers();
     }
 

@@ -16,7 +16,7 @@ import elixer.com.bloodbank.util.Resource;
 
 public class ResponsesViewModel extends AndroidViewModel {
 
-    private static final String TAG = "ResponseViewModel";
+    private static final String TAG = "RequestsViewModel";
     private MediatorLiveData<Resource<List<Request>>> responses;
     private RequestsRepository responseRepository;
 
