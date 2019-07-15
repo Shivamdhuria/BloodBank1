@@ -1,7 +1,6 @@
 package elixer.com.bloodbank.repositories;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -14,10 +13,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import elixer.com.bloodbank.models.Request;
-import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.util.FirebaseQueryLiveData;
 import elixer.com.bloodbank.util.Resource;
 
@@ -27,6 +27,10 @@ public class RequestsRepository {
     private DatabaseReference mDatabase;
     private static FirebaseAuth mAuth;
     private List<Request> uList = new ArrayList<Request>();
+
+    //
+
+    private Map<String, Request> requestMap = new HashMap<>();
     private static final String TAG = "RequestsRepository";
 
 
@@ -44,7 +48,7 @@ public class RequestsRepository {
 
 
     @NonNull
-    public LiveData<Resource<List<Request>>> getUserLiveData() {
+    public LiveData<Resource<Map<String, Request>>> getUserLiveData() {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("requests").child(mAuth.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
@@ -53,18 +57,21 @@ public class RequestsRepository {
 
     }
 
-    private class DeserializerUserList implements Function<DataSnapshot, Resource<List<Request>>> {
+    private class DeserializerUserList implements Function<DataSnapshot, Resource<Map<String, Request>>> {
 
         @Override
-        public Resource<List<Request>> apply(DataSnapshot dataSnapshot) {
+        public Resource<Map<String, Request>> apply(DataSnapshot dataSnapshot) {
             uList.clear();
             for (DataSnapshot snap : dataSnapshot.getChildren()) {
                 //Log.d("TAG","Peeru Value"+snap.getValue().toString());
                 Request request = snap.getValue(Request.class);
-                uList.add(request);
+                String key = snap.getKey();
+                requestMap.put(key, request);
+
+//                uList.add(request);
             }
-            Log.e(TAG, "apply.....: "+ uList.size());
-            return Resource.success(uList);
+//            Log.e(TAG, "apply.....: "+ uList.size());
+            return Resource.success(requestMap);
             //TODO: Define Resource.error for errror case or unable to fetch
         }
     }

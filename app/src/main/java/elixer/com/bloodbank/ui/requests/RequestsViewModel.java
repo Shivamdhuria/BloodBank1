@@ -1,7 +1,6 @@
 package elixer.com.bloodbank.ui.requests;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
-import java.util.List;
+import java.util.Map;
 
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.repositories.RequestsRepository;
@@ -18,7 +17,7 @@ import elixer.com.bloodbank.util.Resource;
 public class RequestsViewModel extends AndroidViewModel {
 
     private static final String TAG = "RequestsViewModel";
-    private MediatorLiveData<Resource<List<Request>>> requests;
+    private MediatorLiveData<Resource<Map<String, Request>>> requests;
     private RequestsRepository requestsRepository;
 
     public RequestsViewModel(@NonNull Application application) {
@@ -27,16 +26,16 @@ public class RequestsViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<Resource<List<Request>>> observeRequests() {
+    public LiveData<Resource<Map<String, Request>>> observeRequests() {
         if (requests == null) {
             requests = new MediatorLiveData<>();
-            requests.setValue(Resource.loading((List<Request>) null));
+            requests.setValue(Resource.loading((Map<String, Request>) null));
 
-            final LiveData<Resource<List<Request>>> source = requestsRepository.getUserLiveData();
+            final LiveData<Resource<Map<String, Request>>> source = requestsRepository.getUserLiveData();
 
-            requests.addSource(source, new Observer<Resource<List<Request>>>() {
+            requests.addSource(source, new Observer<Resource<Map<String, Request>>>() {
                 @Override
-                public void onChanged(Resource<List<Request>> listResource) {
+                public void onChanged(Resource<Map<String, Request>> listResource) {
                     requests.setValue(listResource);
 //                    //Remove source for real time databse
 //                   requests.removeSource(source);

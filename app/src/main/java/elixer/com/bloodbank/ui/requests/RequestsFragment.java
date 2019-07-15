@@ -20,15 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import elixer.com.bloodbank.R;
+import elixer.com.bloodbank.adapters.OnResponseButtonListener;
 import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class RequestsFragment extends Fragment {
+public class RequestsFragment extends Fragment implements OnResponseButtonListener {
 
     private RequestsViewModel viewModel;
     private static final String TAG = "RequestsFragment";
@@ -65,9 +67,9 @@ public class RequestsFragment extends Fragment {
 
     private void subscribeObservers() {
         viewModel.observeRequests().removeObservers(getViewLifecycleOwner());
-        viewModel.observeRequests().observe(getViewLifecycleOwner(), new Observer<Resource<List<Request>>>() {
+        viewModel.observeRequests().observe(getViewLifecycleOwner(), new Observer<Resource<Map<String,Request>>>() {
             @Override
-            public void onChanged(Resource<List<Request>> listResource) {
+            public void onChanged(Resource<Map<String,Request>> listResource) {
                 if (listResource != null) {
                     switch (listResource.status) {
                         case LOADING: {
@@ -111,4 +113,8 @@ public class RequestsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onSwitchFlippedOn(int position) {
+
+    }
 }

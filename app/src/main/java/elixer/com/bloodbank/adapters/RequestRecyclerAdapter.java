@@ -8,14 +8,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.Map;
 
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.models.Request;
 
 public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecyclerAdapter.MyViewHolder> {
 
-    private List<Request> requestList;
+    private Map<String, Request> requestMap;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, place, level, bloodgroup;
@@ -37,8 +37,8 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
 
     }
 
-    public void setRequests(List<Request> requestList) {
-        this.requestList = requestList;
+    public void setRequests(Map<String, Request> requestMap) {
+        this.requestMap = requestMap;
         notifyDataSetChanged();
     }
 
@@ -52,17 +52,19 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(requestList.get(position).getName());
-        holder.place.setText(requestList.get(position).getPlaceOfRequest());
-        holder.bloodgroup.setText(requestList.get(position).getBloodRequired());
-        holder.aSwitch.setChecked(requestList.get(position).getStatus());
+        String key = (String) requestMap.keySet().toArray()[position];
+        Request request = requestMap.get(key);
+        holder.name.setText(request.getName());
+        holder.place.setText(request.getPlaceOfRequest());
+        holder.bloodgroup.setText(request.getBloodRequired());
+        holder.aSwitch.setChecked(request.getStatus());
 
     }
 
     @Override
     public int getItemCount() {
-        if (requestList != null) {
-            return requestList.size();
+        if (requestMap != null) {
+            return requestMap.size();
         }
         return 0;
     }
