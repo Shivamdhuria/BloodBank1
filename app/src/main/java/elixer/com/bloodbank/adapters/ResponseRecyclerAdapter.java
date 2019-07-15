@@ -13,7 +13,7 @@ import java.util.List;
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.models.Request;
 
-public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecyclerAdapter.MyViewHolder> {
+public class ResponseRecyclerAdapter extends RecyclerView.Adapter<ResponseRecyclerAdapter.MyViewHolder> {
 
     private List<Request> requestList;
 
@@ -23,17 +23,17 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
 
         public MyViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.name);
-            place = (TextView) view.findViewById(R.id.place);
-            level = (TextView) view.findViewById(R.id.level);
-            bloodgroup = (TextView) view.findViewById(R.id.bloodgroup);
-            aSwitch = view.findViewById(R.id.switch_button);
+//            name = (TextView) view.findViewById(R.id.TextView_Title);
+//            place = (TextView) view.findViewById(R.id.place);
+//            level = (TextView) view.findViewById(R.id.level);
+//            bloodgroup = (TextView) view.findViewById(R.id.bloodgroup);
+//            aSwitch = view.findViewById(R.id.switch_button);
 
         }
     }
 
 
-    public RequestRecyclerAdapter() {
+    public ResponseRecyclerAdapter() {
 
     }
 
@@ -45,17 +45,17 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.request_list_item, parent, false);
+                .inflate(R.layout.response_list_item, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(requestList.get(position).getName());
-        holder.place.setText(requestList.get(position).getPlaceOfRequest());
-        holder.bloodgroup.setText(requestList.get(position).getBloodRequired());
-        holder.aSwitch.setChecked(requestList.get(position).getStatus());
+//        holder.name.setText(requestList.get(position).getName());
+//        holder.place.setText(requestList.get(position).getPlaceOfRequest());
+//        holder.bloodgroup.setText(requestList.get(position).getBloodRequired());
+//        holder.aSwitch.setChecked(requestList.get(position).getStatus());
 
     }
 

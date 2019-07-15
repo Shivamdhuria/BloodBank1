@@ -28,37 +28,37 @@ import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class RequestsFragment extends Fragment {
+public class ResponsesFragment extends Fragment {
 
-    private RequestsViewModel viewModel;
-    private static final String TAG = "RequestsFragment";
+    private ResponseViewModel viewModel;
+    private static final String TAG = "ResponsesFragment";
     RecyclerView recyclerView;
     RequestRecyclerAdapter mAdapter;
     ProgressBar progressBar;
     List<Request> popo = new ArrayList<>();
 
 
-    public static RequestsFragment newInstance() {
-        return new RequestsFragment();
+    public static ResponsesFragment newInstance() {
+        return new ResponsesFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.requests_fragment, container, false);
+        return inflater.inflate(R.layout.responses_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(RequestsViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ResponseViewModel.class);
         subscribeObservers();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = (RecyclerView) view.findViewById(R.id.requests_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.response_recycler_view);
         progressBar = view.findViewById(R.id.progressBar);
         initRecycler(view.getContext());
 

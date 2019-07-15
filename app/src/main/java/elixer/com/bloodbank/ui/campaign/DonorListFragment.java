@@ -67,8 +67,9 @@ public class DonorListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(NewCampaignViewModel.class);
 
-        viewModel.searchDonors();
+
         subscribeObservers();
+        viewModel.fetchDonors();
     }
 
     private void subscribeObservers() {

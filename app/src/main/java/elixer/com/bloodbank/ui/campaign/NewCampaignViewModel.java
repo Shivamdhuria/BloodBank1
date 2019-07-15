@@ -1,7 +1,6 @@
 package elixer.com.bloodbank.ui.campaign;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -25,7 +24,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
     private double longitude;
     private int radius;
     private DonorListRepository donorListRepository;
-    private MediatorLiveData<Resource<List<String>>> donors;
+    private MediatorLiveData<Resource<List<String>>> donors = new MediatorLiveData<>();
 
 
     private static final String TAG = "NewCampaignViewModel";
@@ -34,6 +33,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
         request = new Request();
         donorListRepository = DonorListRepository.getInstance(application);
         bloodGroupIndex = -1;
+
     }
 
     //For Query Fragment
@@ -54,47 +54,68 @@ public class NewCampaignViewModel extends AndroidViewModel {
 
     //For Donor List Fragment
 
-    public LiveData<Resource<List<String>>> observeDonors() {
-        if (donors == null) {
-            donors = new MediatorLiveData<>();
-        }
+    public void fetchDonors() {
+
+
         //Set up Loading
         donors.setValue(Resource.loading((List<String>) null));
 
-        final LiveData<Resource<List<String>>> source = Transformations.map(donorListRepository.getDonorLiveData(), new Function<List<String>, Resource<List<String>>>() {
+        final LiveData<Resource<List<String>>> source = Transformations.map(donorListRepository.SearchForDonorsByLocation
+                (request.getBloodRequired(), latitude, longitude, radius), new Function<List<String>, Resource<List<String>>>() {
             @Override
             public Resource<List<String>> apply(List<String> input) {
                 if (input.size() == 1 && input.get(0).equals("-1")) {
+
                     return Resource.error("Geo Key Failed", input);
+
                 } else {
                     return Resource.success(input);
                 }
             }
         });
 
+//        final LiveData<Resource<List<String>>> source = Transformations.map(donorListRepository.getDonorLiveData(), new Function<List<String>, Resource<List<String>>>() {
+//            @Override
+//            public Resource<List<String>> apply(List<String> input) {
+//                if (input.size() == 1 && input.get(0).equals("-1")) {
+//                    return Resource.error("Geo Key Failed", input);
+//                } else {
+//                    return Resource.success(input);
+//                }
+//            }
+//        });
+
         donors.addSource(source, new Observer<Resource<List<String>>>() {
             @Override
             public void onChanged(Resource<List<String>> listResource) {
                 donors.setValue(listResource);
-                donors.removeSource(source);
+//                donors.removeSource(source);
             }
         });
 
+    }
+
+    public LiveData<Resource<List<String>>> observeDonors() {
         return donors;
     }
 
+    public void setDonors(MediatorLiveData<Resource<List<String>>> donors) {
+        this.donors = donors;
+    }
 
     public LiveData<Boolean> observeRequestsStatus() {
         return donorListRepository.getIsRequestSuccessful();
     }
 
-    public void searchDonors() {
-        Log.e(TAG, "searchDonors: ");
+//    public void searchDonors() {
+//        Log.e(TAG, "searchDonors: ");
+//
+//        Log.e(TAG, "searchingDonors:..... query not same ");
+//        donorListRepository.SearchForDonorsByLocation(request.getBloodRequired(), latitude, longitude, radius);
+//
+//    }
 
-        Log.e(TAG, "searchingDonors:..... query not same ");
-        donorListRepository.SearchForDonorsByLocation(request.getBloodRequired(), latitude, longitude, radius);
 
-    }
 
     public void sendRequestToDonors() {
         if (request != null) {

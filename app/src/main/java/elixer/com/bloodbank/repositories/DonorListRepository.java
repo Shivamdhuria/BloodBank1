@@ -52,7 +52,7 @@ public class DonorListRepository {
     }
 
 
-    public void SearchForDonorsByLocation(String bloodgroup, Double latitude, Double longitude, int radius) {
+    public LiveData<List<String>> SearchForDonorsByLocation(String bloodgroup, Double latitude, Double longitude, int radius) {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         donorKeyList.clear();
@@ -67,10 +67,7 @@ public class DonorListRepository {
             @Override
             public void onKeyEntered(final String key, GeoLocation location) {
                 //Any location key which is within "radius" from the user's location will show up here as the key parameter in this method
-                Log.d(TAG, "onKeyEntered:.... " + key);
-
                 //If there's need to fetch users name and other info to display
-//                getUserByKey(key);
 
                 if (!key.equals(mAuth.getUid())) {
                     donorKeyList.add(key);
@@ -91,6 +88,7 @@ public class DonorListRepository {
             public void onGeoQueryReady() {
                 //This method will be called when all the locations which are within 3km from the user's location has been loaded Now you can do what you wish with this data
                 donorList.setValue(donorKeyList);
+
             }
 
             @Override
@@ -103,11 +101,10 @@ public class DonorListRepository {
 
             }
         });
-    }
 
-    public LiveData<List<String>> getDonorLiveData() {
         return donorList;
     }
+
 
     public void sendRequests(Request request) {
 

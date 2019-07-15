@@ -10,38 +10,39 @@ import androidx.lifecycle.Observer;
 
 import java.util.List;
 
-import elixer.com.bloodbank.models.User;
-import elixer.com.bloodbank.repositories.ResponsesRepository;
+import elixer.com.bloodbank.models.Request;
+import elixer.com.bloodbank.repositories.RequestsRepository;
 import elixer.com.bloodbank.util.Resource;
 
 public class ResponsesViewModel extends AndroidViewModel {
 
-    private static final String TAG = "RequestsViewModel";
-    private MediatorLiveData<Resource<List<User>>> posts;
-    private ResponsesRepository responsesRepository;
+    private static final String TAG = "ResponseViewModel";
+    private MediatorLiveData<Resource<List<Request>>> responses;
+    private RequestsRepository responseRepository;
+
 
     public ResponsesViewModel(@NonNull Application application) {
         super(application);
-        responsesRepository = ResponsesRepository.getInstance(application);
+        responseRepository = RequestsRepository.getInstance(application);
     }
 
 
-    public LiveData<Resource<List<User>>> observePosts() {
-        if (posts == null) {
-            posts = new MediatorLiveData<>();
-            posts.setValue(Resource.loading((List<User>) null));
+    public LiveData<Resource<List<Request>>> observeResponses() {
+        if (responses == null) {
+            responses = new MediatorLiveData<>();
+            responses.setValue(Resource.loading((List<Request>) null));
 
-            final LiveData<Resource<List<User>>> source = responsesRepository.getUserLiveData();
+            final LiveData<Resource<List<Request>>> source = responseRepository.getUserLiveData();
 
-            posts.addSource(source, new Observer<Resource<List<User>>>() {
+            responses.addSource(source, new Observer<Resource<List<Request>>>() {
                 @Override
-                public void onChanged(Resource<List<User>> listResource) {
-                    posts.setValue(listResource);
-                    //Remove source for real time databse
-//                   posts.removeSource(source);
+                public void onChanged(Resource<List<Request>> listResource) {
+                    responses.setValue(listResource);
+//                    //Remove source for real time databse
+//                   requests.removeSource(source);
                 }
             });
         }
-        return posts;
+        return responses;
     }
 }
