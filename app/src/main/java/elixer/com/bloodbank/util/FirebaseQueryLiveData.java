@@ -58,8 +58,10 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.e(TAG, "onDataChange: ...... on change" + dataSnapshot.toString());
             setValue(dataSnapshot);
         }
+
 
         @Override
         public void onCancelled(DatabaseError databaseError) {

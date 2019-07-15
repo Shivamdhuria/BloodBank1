@@ -78,7 +78,7 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
                         case SUCCESS: {
                             //  adapter.setPosts(listResource.data);
                             showProgressBar(false);
-//                            Log.d(TAG, "Request Frag onChanged: name " + listResource.data.get(0).getName());
+                            Log.d(TAG, "Request Frag onChanged: name " + listResource.data.size());
                             mAdapter.setRequests(listResource.data);
                             break;
                         }

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.util.FirebaseQueryLiveData;
@@ -80,7 +82,7 @@ public class RequestsRepository {
     }
 
     public void sendResponseAndDelete(final String key) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         LocalProperties localProperties = new LocalProperties(PreferenceManager.getDefaultSharedPreferences(context));
 
@@ -95,6 +97,15 @@ public class RequestsRepository {
                 if (task.isSuccessful()) {
                     //Success
                     Log.d(TAG, "onComplete: Response Successfully Written");
+                    //Now Delete the Request from database after a delay of 2 sec
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            mDatabase.child("requests").child(mAuth.getUid()).child(key).removeValue();
+
+                        }
+                    }, 2000);
+
                 } else {
                     //Database Push failed
                 }
