@@ -22,7 +22,6 @@ public class IntroActivity extends MaterialIntroActivity {
 
     @Override
     protected void onDestroy() {
-        Log.e(TAG, "onDestroy:destroy ");
         super.onDestroy();
     }
 
@@ -72,7 +71,6 @@ public class IntroActivity extends MaterialIntroActivity {
 
     private void checkIfFirstTime() {
         if (!localProperties.retrieveIfFirstTime()) {
-            Log.e(TAG, "checkIfFirstTime: " + localProperties.retrieveIfFirstTime());
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
