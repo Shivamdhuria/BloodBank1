@@ -26,7 +26,7 @@ public class ResponseRepository {
     private DatabaseReference mDatabase;
     private static FirebaseAuth mAuth;
     private List<Request> uList = new ArrayList<Request>();
-    private static final String TAG = "RequestsRepository";
+    private static final String TAG = "ResponseRepository";
 
 
     public static ResponseRepository getInstance(Context context) {
@@ -44,7 +44,7 @@ public class ResponseRepository {
     @NonNull
     public LiveData<Resource<List<Request>>> getUserLiveData() {
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("requests").child(mAuth.getUid());
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("responses").child(mAuth.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
         return Transformations.map(mLiveData, new DeserializerUserList());
 
