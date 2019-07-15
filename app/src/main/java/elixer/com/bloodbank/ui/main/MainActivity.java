@@ -31,6 +31,7 @@ import elixer.com.bloodbank.adapters.SectionsPageAdapter;
 import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.ui.campaign.NewCampaignActivity;
 import elixer.com.bloodbank.ui.profile.BuildProfile;
+import elixer.com.bloodbank.ui.reponses.ResponsesFragment;
 import elixer.com.bloodbank.ui.requests.RequestsFragment;
 import elixer.com.bloodbank.util.LocalProperties;
 import elixer.com.bloodbank.util.Resource;
@@ -205,7 +206,7 @@ public class MainActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         mSectionsPageAdapter.addFragment(new RequestsFragment(), "Requests");
-        mSectionsPageAdapter.addFragment(new RequestsFragment(), "Response");
+        mSectionsPageAdapter.addFragment(new ResponsesFragment(), "Response");
         viewPager.setAdapter(mSectionsPageAdapter);
     }
 

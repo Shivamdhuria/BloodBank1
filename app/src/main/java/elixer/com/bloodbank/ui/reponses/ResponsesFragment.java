@@ -22,6 +22,7 @@ import java.util.List;
 
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
+import elixer.com.bloodbank.adapters.ResponseRecyclerAdapter;
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.ui.requests.RequestsViewModel;
 import elixer.com.bloodbank.util.Resource;
@@ -30,10 +31,10 @@ import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
 public class ResponsesFragment extends Fragment {
 
-    private RequestsViewModel viewModel;
+    private ResponsesViewModel viewModel;
     private static final String TAG = "ResponseFragment";
     RecyclerView recyclerView;
-    RequestRecyclerAdapter mAdapter;
+    ResponseRecyclerAdapter mAdapter;
     ProgressBar progressBar;
 
     public static ResponsesFragment newInstance() {
@@ -49,7 +50,7 @@ public class ResponsesFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(RequestsViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ResponsesViewModel.class);
         subscribeObservers();
     }
 
@@ -57,14 +58,14 @@ public class ResponsesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.response_recycler_view);
-        progressBar = view.findViewById(R.id.progressBar);
+        progressBar = view.findViewById(R.id.progressBarRes);
         initRecycler(view.getContext());
 
     }
 
     private void subscribeObservers() {
-        viewModel.observeRequests().removeObservers(getViewLifecycleOwner());
-        viewModel.observeRequests().observe(getViewLifecycleOwner(), new Observer<Resource<List<Request>>>() {
+        viewModel.observeResponses().removeObservers(getViewLifecycleOwner());
+        viewModel.observeResponses().observe(getViewLifecycleOwner(), new Observer<Resource<List<Request>>>() {
             @Override
             public void onChanged(Resource<List<Request>> listResource) {
                 if (listResource != null) {
@@ -78,7 +79,7 @@ public class ResponsesFragment extends Fragment {
                             //  adapter.setPosts(listResource.data);
                             showProgressBar(false);
 //                            Log.d(TAG, "Request Frag onChanged: name " + listResource.data.get(0).getName());
-                            mAdapter.setRequests(listResource.data);
+                            mAdapter.setResponse(listResource.data);
                             break;
                         }
 
@@ -95,7 +96,7 @@ public class ResponsesFragment extends Fragment {
 
     private void initRecycler(Context context) {
 
-        mAdapter = new RequestRecyclerAdapter();
+        mAdapter = new ResponseRecyclerAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, HORIZONTAL);
         recyclerView.addItemDecoration(itemDecor);
