@@ -33,6 +33,7 @@ public class NewCampaignViewModel extends AndroidViewModel {
         request = new Request();
         donorListRepository = DonorListRepository.getInstance(application);
         bloodGroupIndex = -1;
+        radius = 20;
 
     }
 

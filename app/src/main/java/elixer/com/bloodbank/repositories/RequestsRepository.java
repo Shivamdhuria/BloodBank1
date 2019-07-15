@@ -66,16 +66,13 @@ public class RequestsRepository {
 
         @Override
         public Resource<Map<String, Request>> apply(DataSnapshot dataSnapshot) {
-            uList.clear();
+            requestMap.clear();
             for (DataSnapshot snap : dataSnapshot.getChildren()) {
                 //Log.d("TAG","Peeru Value"+snap.getValue().toString());
                 Request request = snap.getValue(Request.class);
                 String key = snap.getKey();
                 requestMap.put(key, request);
-
-//                uList.add(request);
             }
-//            Log.e(TAG, "apply.....: "+ uList.size());
             return Resource.success(requestMap);
             //TODO: Define Resource.error for errror case or unable to fetch
         }
