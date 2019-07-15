@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import elixer.com.bloodbank.R;
@@ -98,7 +96,7 @@ public class RequestsFragment extends Fragment implements OnResponseButtonListen
 
     private void initRecycler(Context context) {
 
-        mAdapter = new RequestRecyclerAdapter();
+        mAdapter = new RequestRecyclerAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, HORIZONTAL);
         recyclerView.addItemDecoration(itemDecor);
@@ -115,6 +113,7 @@ public class RequestsFragment extends Fragment implements OnResponseButtonListen
 
     @Override
     public void onSwitchFlippedOn(int position) {
-
+        Log.d(TAG, "onSwitchFlippedOn: " + mAdapter.getSelectedRequestsKey(position));
+        viewModel.sendResponseAndDeleteRequest(mAdapter.getSelectedRequestsKey(position));
     }
 }

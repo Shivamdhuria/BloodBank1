@@ -44,4 +44,10 @@ public class RequestsViewModel extends AndroidViewModel {
         }
         return requests;
     }
+
+    public void sendResponseAndDeleteRequest(String key) {
+
+        requestsRepository.sendResponseAndDelete(key);
+
+    }
 }

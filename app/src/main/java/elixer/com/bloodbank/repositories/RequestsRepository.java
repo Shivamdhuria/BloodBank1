@@ -1,12 +1,16 @@
 package elixer.com.bloodbank.repositories;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +23,7 @@ import java.util.Map;
 
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.util.FirebaseQueryLiveData;
+import elixer.com.bloodbank.util.LocalProperties;
 import elixer.com.bloodbank.util.Resource;
 
 public class RequestsRepository {
@@ -27,6 +32,7 @@ public class RequestsRepository {
     private DatabaseReference mDatabase;
     private static FirebaseAuth mAuth;
     private List<Request> uList = new ArrayList<Request>();
+    private Context context;
 
     //
 
@@ -42,10 +48,8 @@ public class RequestsRepository {
     }
 
     private RequestsRepository(Context context) {
-
-
+        this.context = context;
     }
-
 
     @NonNull
     public LiveData<Resource<Map<String, Request>>> getUserLiveData() {
@@ -53,9 +57,8 @@ public class RequestsRepository {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("requests").child(mAuth.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
         return Transformations.map(mLiveData, new DeserializerUserList());
-
-
     }
+
 
     private class DeserializerUserList implements Function<DataSnapshot, Resource<Map<String, Request>>> {
 
@@ -74,6 +77,41 @@ public class RequestsRepository {
             return Resource.success(requestMap);
             //TODO: Define Resource.error for errror case or unable to fetch
         }
+    }
+
+    public void sendResponseAndDelete(final String key) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        LocalProperties localProperties = new LocalProperties(PreferenceManager.getDefaultSharedPreferences(context));
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("responses/" + "/" + key, localProperties.retrieveUserObject());
+        //Send response
+
+        mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+                    //Success
+                    Log.d(TAG, "onComplete: Response Successfully Written");
+
+
+                } else {
+                    //Database Push failed
+
+
+                }
+            }
+        });
+//        new Timer().schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                // this code will be executed after 2 seconds
+//                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("requests").child(FirebaseAuth.getInstance().getUid()).child(key);
+//                databaseReference.removeValue();
+//            }
+//        }, 2000);
     }
 
 
