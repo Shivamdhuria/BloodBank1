@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Map;
 
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.adapters.OnResponseButtonListener;
+import elixer.com.bloodbank.adapters.OnResponseListener;
 import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class RequestsFragment extends Fragment implements OnResponseButtonListener {
+public class RequestsFragment extends Fragment implements OnResponseListener {
 
     private RequestsViewModel viewModel;
     private static final String TAG = "RequestsFragment";

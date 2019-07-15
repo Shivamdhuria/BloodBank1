@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import elixer.com.bloodbank.models.Request;
+import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.util.FirebaseQueryLiveData;
 import elixer.com.bloodbank.util.Resource;
 
@@ -25,7 +25,7 @@ public class ResponseRepository {
     private static ResponseRepository instance;
     private DatabaseReference mDatabase;
     private static FirebaseAuth mAuth;
-    private List<Request> uList = new ArrayList<Request>();
+    private List<User> responseList = new ArrayList<>();
     private static final String TAG = "ResponseRepository";
 
 
@@ -42,7 +42,7 @@ public class ResponseRepository {
 
 
     @NonNull
-    public LiveData<Resource<List<Request>>> getUserLiveData() {
+    public LiveData<Resource<List<User>>> getUserLiveData() {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("responses").child(mAuth.getUid());
         FirebaseQueryLiveData mLiveData = new FirebaseQueryLiveData(mDatabase);
@@ -51,21 +51,22 @@ public class ResponseRepository {
 
     }
 
-    private class DeserializerUserList implements Function<DataSnapshot, Resource<List<Request>>> {
+    private class DeserializerUserList implements Function<DataSnapshot, Resource<List<User>>> {
 
         @Override
-        public Resource<List<Request>> apply(DataSnapshot dataSnapshot) {
-            uList.clear();
+        public Resource<List<User>> apply(DataSnapshot dataSnapshot) {
+            responseList.clear();
             for (DataSnapshot snap : dataSnapshot.getChildren()) {
                 //Log.d("TAG","Peeru Value"+snap.getValue().toString());
-                Request request = snap.getValue(Request.class);
-                uList.add(request);
+                User user = snap.getValue(User.class);
+                responseList.add(user);
             }
-            Log.e(TAG, "apply.....: " + uList.size());
-            return Resource.success(uList);
+            return Resource.success(responseList);
             //TODO: Define Resource.error for errror case or unable to fetch
         }
     }
+
+
 
 
 }

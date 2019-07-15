@@ -18,7 +18,7 @@ import elixer.com.bloodbank.models.Request;
 public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecyclerAdapter.MyViewHolder> {
 
     private Map<String, Request> requestMap;
-    private OnResponseButtonListener mOnResponseButtonListener;
+    private OnResponseListener mOnResponseListener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, place, level, bloodgroup;
@@ -36,8 +36,8 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
     }
 
 
-    public RequestRecyclerAdapter(OnResponseButtonListener mOnResponseButtonListener) {
-        this.mOnResponseButtonListener = mOnResponseButtonListener;
+    public RequestRecyclerAdapter(OnResponseListener mOnResponseListener) {
+        this.mOnResponseListener = mOnResponseListener;
         requestMap = new HashMap<>();
     }
 
@@ -65,7 +65,7 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
         holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mOnResponseButtonListener.onSwitchFlippedOn(position);
+                mOnResponseListener.onSwitchFlippedOn(position);
             }
         });
 

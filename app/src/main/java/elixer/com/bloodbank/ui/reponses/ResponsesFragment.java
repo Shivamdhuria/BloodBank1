@@ -1,6 +1,8 @@
 package elixer.com.bloodbank.ui.reponses;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,15 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import elixer.com.bloodbank.R;
-import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
+import elixer.com.bloodbank.adapters.OnCallButtonListener;
 import elixer.com.bloodbank.adapters.ResponseRecyclerAdapter;
-import elixer.com.bloodbank.models.Request;
-import elixer.com.bloodbank.ui.requests.RequestsViewModel;
+import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class ResponsesFragment extends Fragment {
+public class ResponsesFragment extends Fragment implements OnCallButtonListener {
 
     private ResponsesViewModel viewModel;
     private static final String TAG = "ResponseFragment";
@@ -65,9 +66,9 @@ public class ResponsesFragment extends Fragment {
 
     private void subscribeObservers() {
         viewModel.observeResponses().removeObservers(getViewLifecycleOwner());
-        viewModel.observeResponses().observe(getViewLifecycleOwner(), new Observer<Resource<List<Request>>>() {
+        viewModel.observeResponses().observe(getViewLifecycleOwner(), new Observer<Resource<List<User>>>() {
             @Override
-            public void onChanged(Resource<List<Request>> listResource) {
+            public void onChanged(Resource<List<User>> listResource) {
                 if (listResource != null) {
                     switch (listResource.status) {
                         case LOADING: {
@@ -96,7 +97,7 @@ public class ResponsesFragment extends Fragment {
 
     private void initRecycler(Context context) {
 
-        mAdapter = new ResponseRecyclerAdapter();
+        mAdapter = new ResponseRecyclerAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, HORIZONTAL);
         recyclerView.addItemDecoration(itemDecor);
@@ -108,5 +109,13 @@ public class ResponsesFragment extends Fragment {
     public void showProgressBar(boolean visible) {
 
         progressBar.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void onCallButtonPressed(int position) {
+
+        String phoneNumber = mAdapter.getSelectedResponsePhoneNumber(position);
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
+        startActivity(intent);
     }
 }

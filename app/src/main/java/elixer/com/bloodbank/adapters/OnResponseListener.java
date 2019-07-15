@@ -1,6 +1,7 @@
 package elixer.com.bloodbank.adapters;
 
-public interface OnResponseButtonListener {
+public interface OnResponseListener {
 
     void onSwitchFlippedOn(int position);
+
 }

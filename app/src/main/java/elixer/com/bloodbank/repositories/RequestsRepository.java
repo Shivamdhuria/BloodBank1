@@ -85,7 +85,7 @@ public class RequestsRepository {
         LocalProperties localProperties = new LocalProperties(PreferenceManager.getDefaultSharedPreferences(context));
 
         Map<String, Object> updates = new HashMap<>();
-        updates.put("responses/" + "/" + key, localProperties.retrieveUserObject());
+        updates.put("responses/" + "/" + key + "/" + mAuth.getUid() + "/", localProperties.retrieveUserObject());
         //Send response
 
         mDatabase.updateChildren(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -95,12 +95,8 @@ public class RequestsRepository {
                 if (task.isSuccessful()) {
                     //Success
                     Log.d(TAG, "onComplete: Response Successfully Written");
-
-
                 } else {
                     //Database Push failed
-
-
                 }
             }
         });
