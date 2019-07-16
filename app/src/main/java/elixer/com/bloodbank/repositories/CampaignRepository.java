@@ -25,29 +25,26 @@ import java.util.Map;
 
 import elixer.com.bloodbank.models.Request;
 
-public class DonorListRepository {
-    private static final String TAG = "DonorListRepository";
+public class CampaignRepository {
+    private static final String TAG = "CampaignRepository";
 
-    private static DonorListRepository instance;
+    private static CampaignRepository instance;
     private DatabaseReference mDatabase;
     private static FirebaseAuth mAuth;
     private List<String> donorKeyList;
     private MutableLiveData<List<String>> donorList;
-    private MutableLiveData<Boolean> isRequestSuccessful;
 
 
-    public static DonorListRepository getInstance(Context context) {
+    public static CampaignRepository getInstance(Context context) {
         if (instance == null) {
-            instance = new DonorListRepository(context);
+            instance = new CampaignRepository(context);
         }
         return instance;
     }
 
-    private DonorListRepository(Context context) {
+    private CampaignRepository(Context context) {
 
         donorKeyList = new ArrayList<>();
-        isRequestSuccessful = new MutableLiveData<>();
-
 
     }
 
@@ -106,9 +103,8 @@ public class DonorListRepository {
     }
 
 
-    public void sendRequests(Request request) {
-
-        isRequestSuccessful.setValue(false);
+    public LiveData<Boolean> sendRequests(Request request) {
+        final MutableLiveData<Boolean> val = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
         for (int i = 0; i < donorKeyList.size(); i++) {
             updates.put("/requests/" + donorKeyList.get(i) + "/" + mAuth.getUid() + "/", request);
@@ -117,19 +113,14 @@ public class DonorListRepository {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    isRequestSuccessful.setValue(true);
+                    val.setValue(true);
+                } else {
+                    val.setValue(false);
                 }
             }
         });
-
+        return val;
     }
 
-    public LiveData<Boolean> getIsRequestSuccessful() {
-        return isRequestSuccessful;
-    }
-
-    public void setIsRequestSuccessful(MutableLiveData<Boolean> isRequestSuccessful) {
-        this.isRequestSuccessful = isRequestSuccessful;
-    }
 
 }

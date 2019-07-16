@@ -98,7 +98,7 @@ public class DonorListFragment extends Fragment {
             }
         });
 
-        viewModel.observeRequestsStatus().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        viewModel.observeIssRequestSuccessful().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {

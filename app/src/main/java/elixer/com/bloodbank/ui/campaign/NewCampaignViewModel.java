@@ -1,19 +1,21 @@
 package elixer.com.bloodbank.ui.campaign;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
 import elixer.com.bloodbank.models.Request;
-import elixer.com.bloodbank.repositories.DonorListRepository;
+import elixer.com.bloodbank.repositories.CampaignRepository;
 import elixer.com.bloodbank.util.Resource;
 
 public class NewCampaignViewModel extends AndroidViewModel {
@@ -23,15 +25,16 @@ public class NewCampaignViewModel extends AndroidViewModel {
     private double latitude;
     private double longitude;
     private int radius;
-    private DonorListRepository donorListRepository;
+    private CampaignRepository campaignRepository;
     private MediatorLiveData<Resource<List<String>>> donors = new MediatorLiveData<>();
+    private MediatorLiveData<Boolean> isRequestSuccessful = new MediatorLiveData<>();
 
 
     private static final String TAG = "NewCampaignViewModel";
     public NewCampaignViewModel(@NonNull Application application) {
         super(application);
         request = new Request();
-        donorListRepository = DonorListRepository.getInstance(application);
+        campaignRepository = CampaignRepository.getInstance(application);
         bloodGroupIndex = -1;
         radius = 20;
 
@@ -56,12 +59,10 @@ public class NewCampaignViewModel extends AndroidViewModel {
     //For Donor List Fragment
 
     public void fetchDonors() {
-
-
         //Set up Loading
         donors.setValue(Resource.loading((List<String>) null));
 
-        final LiveData<Resource<List<String>>> source = Transformations.map(donorListRepository.SearchForDonorsByLocation
+        final LiveData<Resource<List<String>>> source = Transformations.map(campaignRepository.SearchForDonorsByLocation
                 (request.getBloodRequired(), latitude, longitude, radius), new Function<List<String>, Resource<List<String>>>() {
             @Override
             public Resource<List<String>> apply(List<String> input) {
@@ -74,17 +75,6 @@ public class NewCampaignViewModel extends AndroidViewModel {
                 }
             }
         });
-
-//        final LiveData<Resource<List<String>>> source = Transformations.map(donorListRepository.getDonorLiveData(), new Function<List<String>, Resource<List<String>>>() {
-//            @Override
-//            public Resource<List<String>> apply(List<String> input) {
-//                if (input.size() == 1 && input.get(0).equals("-1")) {
-//                    return Resource.error("Geo Key Failed", input);
-//                } else {
-//                    return Resource.success(input);
-//                }
-//            }
-//        });
 
         donors.addSource(source, new Observer<Resource<List<String>>>() {
             @Override
@@ -100,28 +90,34 @@ public class NewCampaignViewModel extends AndroidViewModel {
         return donors;
     }
 
-    public void setDonors(MediatorLiveData<Resource<List<String>>> donors) {
-        this.donors = donors;
+
+    public MediatorLiveData<Boolean> observeIssRequestSuccessful() {
+        return isRequestSuccessful;
     }
 
-    public LiveData<Boolean> observeRequestsStatus() {
-        return donorListRepository.getIsRequestSuccessful();
+    public void setIsRequestSuccessful(MediatorLiveData<Boolean> isRequestSuccessful) {
+        this.isRequestSuccessful = isRequestSuccessful;
     }
-
-//    public void searchDonors() {
-//        Log.e(TAG, "searchDonors: ");
-//
-//        Log.e(TAG, "searchingDonors:..... query not same ");
-//        donorListRepository.SearchForDonorsByLocation(request.getBloodRequired(), latitude, longitude, radius);
-//
-//    }
-
-
 
     public void sendRequestToDonors() {
         if (request != null) {
-            donorListRepository.sendRequests(request);
+            Log.e(TAG, "sendRequestToDonors: " );
+            isRequestSuccessful.setValue(false);
+
+            final LiveData<Boolean> source = campaignRepository.sendRequests(request);
+
+            isRequestSuccessful.addSource(source, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean val) {
+                    isRequestSuccessful.setValue(val);
+                    isRequestSuccessful.removeSource(source);
+                }
+            });
         }
+
+
+
+
     }
 
 
