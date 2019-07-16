@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,23 +19,25 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import elixer.com.bloodbank.R;
+import elixer.com.bloodbank.adapters.OnResponseListener;
 import elixer.com.bloodbank.adapters.RequestRecyclerAdapter;
 import elixer.com.bloodbank.models.Request;
 import elixer.com.bloodbank.util.Resource;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class RequestsFragment extends Fragment {
+public class RequestsFragment extends Fragment implements OnResponseListener {
 
     private RequestsViewModel viewModel;
     private static final String TAG = "RequestsFragment";
-    RecyclerView recyclerView;
-    RequestRecyclerAdapter mAdapter;
-    ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    private RequestRecyclerAdapter mAdapter;
+    private ProgressBar progressBar;
+    private TextView textviewEmpty;
+
 
 
     public static RequestsFragment newInstance() {
@@ -59,27 +62,31 @@ public class RequestsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.requests_recycler_view);
         progressBar = view.findViewById(R.id.progressBar);
+        textviewEmpty = view.findViewById(R.id.textViewEmpty);
         initRecycler(view.getContext());
 
     }
 
     private void subscribeObservers() {
         viewModel.observeRequests().removeObservers(getViewLifecycleOwner());
-        viewModel.observeRequests().observe(getViewLifecycleOwner(), new Observer<Resource<List<Request>>>() {
+        viewModel.observeRequests().observe(getViewLifecycleOwner(), new Observer<Resource<Map<String,Request>>>() {
             @Override
-            public void onChanged(Resource<List<Request>> listResource) {
+            public void onChanged(Resource<Map<String,Request>> listResource) {
                 if (listResource != null) {
                     switch (listResource.status) {
                         case LOADING: {
                             Log.d(TAG, "onChanged: REQUESTSFragment: LOADING...");
+                            textviewEmpty.setVisibility(View.INVISIBLE);
                             showProgressBar(true);
                             break;
                         }
                         case SUCCESS: {
                             //  adapter.setPosts(listResource.data);
                             showProgressBar(false);
-//                            Log.d(TAG, "Request Frag onChanged: name " + listResource.data.get(0).getName());
+                            Log.d(TAG, "Request Frag onChanged: name " + listResource.data.size());
                             mAdapter.setRequests(listResource.data);
+                            //Hide TextView Or  Recycler
+                            checkIfEmpty(listResource.data);
                             break;
                         }
 
@@ -94,9 +101,20 @@ public class RequestsFragment extends Fragment {
         });
     }
 
+    private void checkIfEmpty(Map<String, Request> data) {
+        if (data.size() == 0) {
+            textviewEmpty.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+
+        } else {
+            textviewEmpty.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void initRecycler(Context context) {
 
-        mAdapter = new RequestRecyclerAdapter();
+        mAdapter = new RequestRecyclerAdapter(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         DividerItemDecoration itemDecor = new DividerItemDecoration(context, HORIZONTAL);
         recyclerView.addItemDecoration(itemDecor);
@@ -111,4 +129,10 @@ public class RequestsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onSwitchFlippedOn(int position) {
+        Log.d(TAG, "onSwitchFlippedOn: " + mAdapter.getSelectedRequestsKey(position));
+        viewModel.sendResponseAndDeleteRequest(mAdapter.getSelectedRequestsKey(position));
+
+    }
 }

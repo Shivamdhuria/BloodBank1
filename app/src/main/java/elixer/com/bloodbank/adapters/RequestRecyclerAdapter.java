@@ -1,21 +1,27 @@
 package elixer.com.bloodbank.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import elixer.com.bloodbank.R;
 import elixer.com.bloodbank.models.Request;
 
 public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecyclerAdapter.MyViewHolder> {
 
-    private List<Request> requestList;
+    private Map<String, Request> requestMap;
+    private OnResponseListener mOnResponseListener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, place, level, bloodgroup;
@@ -33,12 +39,13 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
     }
 
 
-    public RequestRecyclerAdapter() {
-
+    public RequestRecyclerAdapter(OnResponseListener mOnResponseListener) {
+        this.mOnResponseListener = mOnResponseListener;
+        requestMap = new HashMap<>();
     }
 
-    public void setRequests(List<Request> requestList) {
-        this.requestList = requestList;
+    public void setRequests(Map<String, Request> requestMap) {
+        this.requestMap = requestMap;
         notifyDataSetChanged();
     }
 
@@ -51,19 +58,36 @@ public class RequestRecyclerAdapter extends RecyclerView.Adapter<RequestRecycler
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(requestList.get(position).getName());
-        holder.place.setText(requestList.get(position).getPlaceOfRequest());
-        holder.bloodgroup.setText(requestList.get(position).getBloodRequired());
-        holder.aSwitch.setChecked(requestList.get(position).getStatus());
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+        String key = (String) requestMap.keySet().toArray()[position];
+        Request request = requestMap.get(key);
+        holder.name.setText(request.getName());
+        holder.place.setText(request.getPlaceOfRequest());
+        holder.bloodgroup.setText(request.getBloodRequired());
+        holder.aSwitch.setChecked(request.getStatus());
+        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mOnResponseListener.onSwitchFlippedOn(position);
+            }
+        });
 
     }
 
     @Override
     public int getItemCount() {
-        if (requestList != null) {
-            return requestList.size();
+        if (requestMap != null) {
+            return requestMap.size();
         }
         return 0;
+    }
+
+    public String getSelectedRequestsKey(int position) {
+        if (requestMap != null) {
+            if (requestMap.size() > 0) {
+                return (String) requestMap.keySet().toArray()[position];
+            }
+        }
+        return null;
     }
 }

@@ -10,15 +10,14 @@ import androidx.lifecycle.Observer;
 
 import java.util.List;
 
-import elixer.com.bloodbank.models.Request;
-import elixer.com.bloodbank.repositories.RequestsRepository;
+import elixer.com.bloodbank.models.User;
 import elixer.com.bloodbank.repositories.ResponseRepository;
 import elixer.com.bloodbank.util.Resource;
 
 public class ResponsesViewModel extends AndroidViewModel {
 
     private static final String TAG = "RequestsViewModel";
-    private MediatorLiveData<Resource<List<Request>>> responses;
+    private MediatorLiveData<Resource<List<User>>> responses;
     private ResponseRepository responseRepository;
 
 
@@ -28,16 +27,16 @@ public class ResponsesViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<Resource<List<Request>>> observeResponses() {
+    public LiveData<Resource<List<User>>> observeResponses() {
         if (responses == null) {
             responses = new MediatorLiveData<>();
-            responses.setValue(Resource.loading((List<Request>) null));
+            responses.setValue(Resource.loading((List<User>) null));
 
-            final LiveData<Resource<List<Request>>> source = responseRepository.getUserLiveData();
+            final LiveData<Resource<List<User>>> source = responseRepository.getUserLiveData();
 
-            responses.addSource(source, new Observer<Resource<List<Request>>>() {
+            responses.addSource(source, new Observer<Resource<List<User>>>() {
                 @Override
-                public void onChanged(Resource<List<Request>> listResource) {
+                public void onChanged(Resource<List<User>> listResource) {
                     responses.setValue(listResource);
 //                    //Remove source for real time databse
 //                   requests.removeSource(source);
