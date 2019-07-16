@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,9 +33,11 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
 
     private RequestsViewModel viewModel;
     private static final String TAG = "RequestsFragment";
-    RecyclerView recyclerView;
-    RequestRecyclerAdapter mAdapter;
-    ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    private RequestRecyclerAdapter mAdapter;
+    private ProgressBar progressBar;
+    private TextView textviewEmpty;
+
 
 
     public static RequestsFragment newInstance() {
@@ -59,6 +62,7 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.requests_recycler_view);
         progressBar = view.findViewById(R.id.progressBar);
+        textviewEmpty = view.findViewById(R.id.textViewEmpty);
         initRecycler(view.getContext());
 
     }
@@ -72,6 +76,7 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
                     switch (listResource.status) {
                         case LOADING: {
                             Log.d(TAG, "onChanged: REQUESTSFragment: LOADING...");
+                            textviewEmpty.setVisibility(View.INVISIBLE);
                             showProgressBar(true);
                             break;
                         }
@@ -80,6 +85,8 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
                             showProgressBar(false);
                             Log.d(TAG, "Request Frag onChanged: name " + listResource.data.size());
                             mAdapter.setRequests(listResource.data);
+                            //Hide TextView Or  Recycler
+                            checkIfEmpty(listResource.data);
                             break;
                         }
 
@@ -92,6 +99,17 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
                 }
             }
         });
+    }
+
+    private void checkIfEmpty(Map<String, Request> data) {
+        if (data.size() == 0) {
+            textviewEmpty.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+
+        } else {
+            textviewEmpty.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initRecycler(Context context) {
@@ -115,5 +133,6 @@ public class RequestsFragment extends Fragment implements OnResponseListener {
     public void onSwitchFlippedOn(int position) {
         Log.d(TAG, "onSwitchFlippedOn: " + mAdapter.getSelectedRequestsKey(position));
         viewModel.sendResponseAndDeleteRequest(mAdapter.getSelectedRequestsKey(position));
+
     }
 }
