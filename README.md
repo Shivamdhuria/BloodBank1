@@ -8,6 +8,5 @@ A virtual Bloodbank application that connects donors and recepients using ViewMo
 
 ### Screenshots
 
-<img src="screenshots/Home.png" width="200"> <img src="screenshots.dnors.png" width="200">
-<img src="screenshots/intro.png" width="200"> <img src="screenshots/map.png" width="200"> <img src="screenshots/verify.png" width="200">
+<img src="screenshots/Home.png" width="200"><img src="screenshots/intro.png" width="200"> <img src="screenshots/map.png" width="200"> <img src="screenshots/verify.png" width="200">
 
